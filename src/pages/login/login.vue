@@ -34,7 +34,7 @@
             </div>
           </el-form-item>
           <el-form-item style="margin-bottom: 0;">
-            <el-col :span="10" :offset="14">
+            <el-col :span="9" :offset="15">
               <el-form-item>
                 <el-button
                   type="primary"
