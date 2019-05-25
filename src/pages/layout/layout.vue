@@ -2,7 +2,7 @@
   <div class="layout">
     <div class="siderbar-wrapper" :style="{width: this.isCollapsed?'64px':'200px'}">
       <div class="logo-wrapper">
-        公司Logo
+        logo
       </div>
       <el-menu
         background-color="#424f63"
@@ -35,7 +35,7 @@
       <div class="menu-collapse-wrapper float-left" @click="toggleMenu">
         <i class="el-icon-adm-menu" :style="{transform: 'rotateZ(' + (this.isCollapsed ? '90' : '0') + 'deg)'}"></i>
       </div>
-      <div class="title float-left">通用航空管理系统</div>
+      <div class="title float-left">VUE-ADMIN 后台管理系统</div>
       <ul class="menu-list float-right">
         <li v-if="user" class="menu-item" style="padding: 0;">
           <el-dropdown
@@ -49,7 +49,7 @@
             </div>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item command="a">{{user.username}}</el-dropdown-item>
-              <!--el-dropdown-item command="b">{{user.name}}</el-dropdown-item-->
+              <el-dropdown-item command="b">{{user.name}}</el-dropdown-item>
               <el-dropdown-item command="b">{{user.type.name}}</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
@@ -85,15 +85,24 @@
             icon: 'el-icon-adm-home'
           },
           {
-            path: '/EngineeringManagement',
+            path: '/Engineering',
             title: '工程管理',
             icon: 'el-icon-adm-linechart',
             children: [
-              {path: '/EngineeringManagement/shzlpg', title: '适航指令评估'},
-              {path: '/EngineeringManagement/djgxzt', title: '单机构型状态'},
-              {path: '/EngineeringManagement/shwjjs', title: '适航文件接受'},
-              {path: '/EngineeringManagement/wxdggbpg', title: '维修大纲改版评估'},
-              {path: '/EngineeringManagement/oemzl', title: 'OEM资料'}
+              {path: '/Engineering/ADEval', title: '适航指令评估'},
+              {path: '/Engineering/ACConfig', title: '单机构型状态'},
+              {path: '/Engineering/MPEval', title: '维修大纲改版评估'},
+              {path: '/Engineering/OEMDoc', title: 'OEM资料'}
+            ]
+          },
+          {
+            path: '/MCC',
+            title: '维修控制',
+            icon: 'el-icon-adm-linechart',
+            children: [
+              {path: '/MCC/WorkOrder', title: '工作指令'},
+              {path: '/MCC/StaffList', title: '人员列表'},
+              {path: '/MCC/LabHr', title: '工时管理'}
             ]
           },
           {
@@ -172,10 +181,10 @@
         let User = {
           id: '7f859967-9b12-441c-badc-8a7d312f6da4',
           username: 'admin',
-          name: '',
+          name: 'luichooy',
           type: {
             code: 0,
-            name: 'System Adm'
+            name: '超级管理员'
           }
         };
         

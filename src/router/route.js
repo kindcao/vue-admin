@@ -51,8 +51,8 @@ export const otherRouter = {
 // 作为Main组件的子页面展示并且在左侧菜单显示的路由写在appRouter里
 export const appRouter = [
   {
-    path: '/EngineeringManagement',
-    name: 'EngineeringManagement',
+    path: '/Engineering',
+    name: 'Engineering',
     title: '工程管理',
     meta: {
       requireAuth: true
@@ -60,40 +60,34 @@ export const appRouter = [
     component: Layout,
     children: [
       {
-        path: 'shzlpg',
-        name: 'shzlpg',
-        title: '适航指令评估-123123',
-        component: () => import('src/pages/EngineeringManagement/1-shzlpg')
+        path: 'ADEval',
+        name: 'ADEval',
+        title: '适航指令评估',
+        component: () => import('src/pages/Engineering/ADEval')
       },
       {
-        path: 'djgxzt',
-        name: 'djgxzt',
+        path: 'ACConfig',
+        name: 'ACConfig',
         title: '单机构型状态',
-        component: () => import('src/pages/EngineeringManagement/2-djgxzt')
+        component: () => import('src/pages/Engineering/ACConfig')
       },
       {
-        path: 'shwjjs',
-        name: 'shwjjs',
-        title: '适航文件接受',
-        component: () => import('src/pages/EngineeringManagement/3-shwjjs')
-      },
-      {
-        path: 'wxdggbpg',
-        name: 'wxdggbpg',
+        path: 'MPEval',
+        name: 'MPEval',
         title: '维修大纲改版评估',
-        component: () => import('src/pages/EngineeringManagement/4-wxdggbpg')
+        component: () => import('src/pages/Engineering/MPEval')
       },
       {
-        path: 'oemzl',
-        name: 'oemzl',
+        path: 'OEMDoc',
+        name: 'OEMDoc',
         title: 'OEM资料',
-        component: () => import('src/pages/EngineeringManagement/5-oemzl')
+        component: () => import('src/pages/Engineering/OEMDoc')
       }
     ]
   },
   {
-    path: '/MaintenanceControl',
-    name: 'MaintenanceControl',
+    path: '/MCC',
+    name: 'MCC',
     title: '工程管理',
     meta: {
       requireAuth: true
@@ -101,22 +95,22 @@ export const appRouter = [
     component: Layout,
     children: [
       {
-        path: '1_mc_gzzl',
-        name: '1_mc_gzzl',
+        path: 'WorkOrder',
+        name: 'WorkOrder',
         title: '工作指令',
-        component: () => import('src/pages/MaintenanceControl/1_mc_gzzl')
+        component: () => import('src/pages/MCC/WorkOrder')
       },
       {
-        path: '2_mc_rylb',
-        name: '2_mc_rylb',
+        path: 'StaffList',
+        name: 'StaffList',
         title: '人员列表',
-        component: () => import('src/pages/MaintenanceControl/2_mc_rylb')
+        component: () => import('src/pages/MCC/StaffList')
       },
       {
-        path: '3_mc_gsgl',
-        name: '3_mc_gsgl',
+        path: 'LabHr',
+        name: 'LabHr',
         title: '工时管理',
-        component: () => import('src/pages/MaintenanceControl/3_mc_gsgl')
+        component: () => import('src/pages/MCC/LabHr')
       }
     ]
   },
