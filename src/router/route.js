@@ -62,7 +62,7 @@ export const appRouter = [
       {
         path: 'shzlpg',
         name: 'shzlpg',
-        title: '适航指令评估-pinggu3',
+        title: '适航指令评估',
         component: () => import('src/pages/EngineeringManagement/1-shzlpg')
       },
       {
