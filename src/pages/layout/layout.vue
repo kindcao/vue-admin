@@ -2,7 +2,7 @@
   <div class="layout">
     <div class="siderbar-wrapper" :style="{width: this.isCollapsed?'64px':'200px'}">
       <div class="logo-wrapper">
-        logo
+        公司Logo
       </div>
       <el-menu
         background-color="#424f63"
@@ -35,7 +35,7 @@
       <div class="menu-collapse-wrapper float-left" @click="toggleMenu">
         <i class="el-icon-adm-menu" :style="{transform: 'rotateZ(' + (this.isCollapsed ? '90' : '0') + 'deg)'}"></i>
       </div>
-      <div class="title float-left">VUE-ADMIN 后台管理系统</div>
+      <div class="title float-left">维修管理系统</div>
       <ul class="menu-list float-right">
         <li v-if="user" class="menu-item" style="padding: 0;">
           <el-dropdown
@@ -49,7 +49,7 @@
             </div>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item command="a">{{user.username}}</el-dropdown-item>
-              <el-dropdown-item command="b">{{user.name}}</el-dropdown-item>
+              <!--el-dropdown-item command="b">{{user.name}}</el-dropdown-item-->
               <el-dropdown-item command="b">{{user.type.name}}</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
@@ -181,10 +181,10 @@
         let User = {
           id: '7f859967-9b12-441c-badc-8a7d312f6da4',
           username: 'admin',
-          name: 'luichooy',
+          name: '',
           type: {
             code: 0,
-            name: '超级管理员'
+            name: 'System Adm'
           }
         };
         
