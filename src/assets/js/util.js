@@ -9,7 +9,7 @@ let util = {
 };
 
 export function setTitle (title) {
-  title = title || 'VUE-ADMIN';
+  title = title || '通用航空管理系统';
   window.document.title = title;
 }
 
