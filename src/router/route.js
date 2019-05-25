@@ -51,6 +51,47 @@ export const otherRouter = {
 // 作为Main组件的子页面展示并且在左侧菜单显示的路由写在appRouter里
 export const appRouter = [
   {
+    path: '/EngineeringManagement',
+    name: 'EngineeringManagement',
+    title: '工程管理',
+    meta: {
+      requireAuth: true
+    },
+    component: Layout,
+    children: [
+      {
+        path: 'shzlpg',
+        name: 'shzlpg',
+        title: '适航指令评估',
+        component: () => import('src/pages/EngineeringManagement/1-shzlpg')
+      },
+      {
+        path: 'djgxzt',
+        name: 'djgxzt',
+        title: '单机构型状态',
+        component: () => import('src/pages/EngineeringManagement/2-djgxzt')
+      },
+      {
+        path: 'shwjjs',
+        name: 'shwjjs',
+        title: '适航文件接受',
+        component: () => import('src/pages/EngineeringManagement/3-shwjjs')
+      },
+      {
+        path: 'wxdggbpg',
+        name: 'wxdggbpg',
+        title: '维修大纲改版评估',
+        component: () => import('src/pages/EngineeringManagement/4-wxdggbpg')
+      },
+      {
+        path: 'oemzl',
+        name: 'oemzl',
+        title: 'OEM资料',
+        component: () => import('src/pages/EngineeringManagement/5-oemzl')
+      }
+    ]
+  },
+  {
     path: '/tables',
     name: 'tables',
     title: '表格管理',

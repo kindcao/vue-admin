@@ -85,6 +85,18 @@
             icon: 'el-icon-adm-home'
           },
           {
+            path: '/EngineeringManagement',
+            title: '工程管理',
+            icon: 'el-icon-adm-linechart',
+            children: [
+              {path: '/EngineeringManagement/shzlpg', title: '适航指令评估'},
+              {path: '/EngineeringManagement/djgxzt', title: '单机构型状态'},
+              {path: '/EngineeringManagement/shwjjs', title: '适航文件接受'},
+              {path: '/EngineeringManagement/wxdggbpg', title: '维修大纲改版评估'},
+              {path: '/EngineeringManagement/oemzl', title: 'OEM资料'}
+            ]
+          },
+          {
             path: '/tables',
             title: '表格管理',
             icon: 'el-icon-adm-linechart',
