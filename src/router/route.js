@@ -92,6 +92,35 @@ export const appRouter = [
     ]
   },
   {
+    path: '/MaintenanceControl',
+    name: 'MaintenanceControl',
+    title: '工程管理',
+    meta: {
+      requireAuth: true
+    },
+    component: Layout,
+    children: [
+      {
+        path: '1_mc_gzzl',
+        name: '1_mc_gzzl',
+        title: '工作指令',
+        component: () => import('src/pages/MaintenanceControl/1_mc_gzzl')
+      },
+      {
+        path: '2_mc_rylb',
+        name: '2_mc_rylb',
+        title: '人员列表',
+        component: () => import('src/pages/MaintenanceControl/2_mc_rylb')
+      },
+      {
+        path: '3_mc_gsgl',
+        name: '3_mc_gsgl',
+        title: '工时管理',
+        component: () => import('src/pages/MaintenanceControl/3_mc_gsgl')
+      }
+    ]
+  },
+  {
     path: '/tables',
     name: 'tables',
     title: '表格管理',
