@@ -53,7 +53,7 @@ export const appRouter = [
   {
     path: '/EngineeringManagement',
     name: 'EngineeringManagement',
-    title: '工程管理',
+    title: '工程管理kind',
     meta: {
       requireAuth: true
     },
