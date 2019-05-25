@@ -1,11 +1,7 @@
 <template>
   <div class="home">
-    <p>首页</p>
-    <p>首页</p>
-    <p>首页</p>
-    <p>首页</p>
-    <p>首页</p>
-    <p>首页</p>
+
+    <p>首wwwwwwwwwwwww页</p>
     <p>首页</p>
     <p>首页</p>
     <p>首页</p>
