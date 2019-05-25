@@ -9,7 +9,7 @@ let util = {
 };
 
 export function setTitle (title) {
-  title = title || '通用航空管理系统';
+  title = title || '维修管理系统';
   window.document.title = title;
 }
 

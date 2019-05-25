@@ -35,7 +35,7 @@
       <div class="menu-collapse-wrapper float-left" @click="toggleMenu">
         <i class="el-icon-adm-menu" :style="{transform: 'rotateZ(' + (this.isCollapsed ? '90' : '0') + 'deg)'}"></i>
       </div>
-      <div class="title float-left">通用航空管理系统</div>
+      <div class="title float-left">维修管理系统</div>
       <ul class="menu-list float-right">
         <li v-if="user" class="menu-item" style="padding: 0;">
           <el-dropdown
