@@ -6,9 +6,12 @@ import store from './store/index';
 import router from './router/index';
 import Root from './Root.vue';
 
-// 引入公共样式表
+// 公共样式表
 import 'normalize.css';
 import 'animate.css';
+
+// 引入babel-polyfill
+import 'babel-polyfill';
 
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
