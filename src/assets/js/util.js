@@ -9,7 +9,7 @@ let util = {
 };
 
 export function setTitle (title) {
-  title = title || 'VUE-DEMO1';
+  title = title || '维修管理系统';
   window.document.title = title;
 }
 

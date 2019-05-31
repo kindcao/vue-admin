@@ -2,7 +2,7 @@
   <div class="layout">
     <div class="siderbar-wrapper" :style="{width: this.isCollapsed?'64px':'200px'}">
       <div class="logo-wrapper">
-        <img :src="logoImgSrc" width="200" height="50" alt="logo"/>
+        公司Logo
       </div>
       <el-menu
         background-color="#424f63"
@@ -14,22 +14,20 @@
         :collapse="isCollapsed"
         :default-active="$route.path">
         <template v-for="(item, index) in sider_menu_data">
-          <div style="border-top:1px solid #fff">
-            <el-menu-item class="menu-item" v-if="!item.children" :index="item.path" :key="index">
+          <el-menu-item class="menu-item" v-if="!item.children" :index="item.path" :key="index">
+            <i :class="item.icon"></i>
+            <span slot="title">{{item.title}}</span>
+          </el-menu-item>
+          <el-submenu v-else :index="item.path">
+            <template slot="title">
               <i :class="item.icon"></i>
               <span slot="title">{{item.title}}</span>
+            </template>
+            <el-menu-item class="menu-item" v-for="(sub_item, sub_index) in item.children" :index="sub_item.path"
+                          :key="sub_index">
+              <span slot="title" style="margin-left:12px;">{{sub_item.title}}</span>
             </el-menu-item>
-            <el-submenu v-else :index="item.path">
-              <template slot="title">
-                <i :class="item.icon"></i>
-                <span slot="title">{{item.title}}</span>
-              </template>
-              <el-menu-item class="menu-item" v-for="(sub_item, sub_index) in item.children" :index="sub_item.path"
-                            :key="sub_index">
-                <span slot="title" style="margin-left:12px;">{{sub_item.title}}</span>
-              </el-menu-item>
-            </el-submenu>
-          </div>
+          </el-submenu>
         </template>
       </el-menu>
     </div>
@@ -37,7 +35,7 @@
       <div class="menu-collapse-wrapper float-left" @click="toggleMenu">
         <i class="el-icon-adm-menu" :style="{transform: 'rotateZ(' + (this.isCollapsed ? '90' : '0') + 'deg)'}"></i>
       </div>
-      <div class="title float-left">Vue-DEMO 后台管理系统</div>
+      <div class="title float-left">维修管理系统</div>
       <ul class="menu-list float-right">
         <li v-if="user" class="menu-item" style="padding: 0;">
           <el-dropdown
@@ -51,7 +49,7 @@
             </div>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item command="a">{{user.username}}</el-dropdown-item>
-              <el-dropdown-item command="b">{{user.name}}</el-dropdown-item>
+              <!--el-dropdown-item command="b">{{user.name}}</el-dropdown-item-->
               <el-dropdown-item command="b">{{user.type.name}}</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
@@ -73,7 +71,7 @@
 </template>
 <script>
   import {sessionStorage} from 'src/assets/js/storage';
-
+  
   export default {
     created() {
       this.checkAuth();
@@ -85,6 +83,27 @@
             path: '/home',
             title: '首页',
             icon: 'el-icon-adm-home'
+          },
+          {
+            path: '/Engineering',
+            title: '工程管理',
+            icon: 'el-icon-adm-linechart',
+            children: [
+              {path: '/Engineering/ADEval', title: '适航指令评估'},
+              {path: '/Engineering/ACConfig', title: '单机构型状态'},
+              {path: '/Engineering/MPEval', title: '维修大纲改版评估'},
+              {path: '/Engineering/OEMDoc', title: 'OEM资料'}
+            ]
+          },
+          {
+            path: '/MCC',
+            title: '维修控制',
+            icon: 'el-icon-adm-linechart',
+            children: [
+              {path: '/MCC/WorkOrder', title: '工作指令'},
+              {path: '/MCC/StaffList', title: '人员列表'},
+              {path: '/MCC/LabHr', title: '工时管理'}
+            ]
           },
           {
             path: '/tables',
@@ -141,8 +160,7 @@
           }
         ],
         isCollapsed: false,
-        adminMenuShow: false,
-        logoImgSrc: '../../../static/logo.png'
+        adminMenuShow: false
       }
     },
     computed: {
@@ -163,13 +181,13 @@
         let User = {
           id: '7f859967-9b12-441c-badc-8a7d312f6da4',
           username: 'admin',
-          name: 'kind',
+          name: '',
           type: {
             code: 0,
-            name: '超级管理员'
+            name: 'System Adm'
           }
         };
-
+        
         this.$store.commit('SET_USER', User);
       },
       handleCommand(command) {
@@ -184,21 +202,21 @@
           cancelButtonText: '取消',
           type: 'warning'
         })
-          .then(() => {
-            this.$store.commit('SET_TOKEN', '');
-            this.$store.commit('SET_USER', null);
-            this.$router.replace({path: '/login'});
-          })
-          .catch(() => {
-            return false;
-          })
+        .then(() => {
+          this.$store.commit('SET_TOKEN', '');
+          this.$store.commit('SET_USER', null);
+          this.$router.replace({path: '/login'});
+        })
+        .catch(() => {
+          return false;
+        })
       }
     }
   }
 </script>
 <style lang="scss">
   @import '../../assets/styles/variable';
-
+  
   .siderbar-wrapper {
     position: fixed;
     top: 0;
@@ -208,7 +226,7 @@
     z-index: 11;
     background-color: $siderbarBackgroundColor;
     transition: all 0.3s ease-in-out;
-
+    
     .logo-wrapper {
       height: 40px;
       line-height: 40px;
@@ -218,7 +236,7 @@
       color: #FFFFFF;
       color: #65CEA7;
     }
-
+    
     .menu-wrapper {
       position: absolute;
       top: 72px;
@@ -226,43 +244,43 @@
       width: 100%;
       border-right: none;
       transition: all 0.3s ease-in-out;
-
+      
       &:not(.el-menu--collapse) {
         overflow-y: auto;
         overflow-x: hidden;
       }
-
+      
       i {
         color: #FFFFFF;
       }
-
+      
       .menu-item {
-
+        
         &.is-active, &:hover {
           background-color: #353F4F !important;
           color: #65CEA7 !important;
-
+          
           i {
             color: #65CEA7 !important;
           }
         }
-
+        
       }
-
+      
       .el-submenu__title:hover {
         color: #65CEA7 !important;
-
+        
         i {
           color: #65CEA7 !important;
         }
       }
-
+      
       .el-submenu, .el-menu-item {
         width: 100%;
       }
     }
   }
-
+  
   .topbar-wrapper {
     position: fixed;
     left: $siderbarWidth;
@@ -275,23 +293,23 @@
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .12), 0 0 6px 0 rgba(0, 0, 0, .04);
     transition: all 0.3s ease-in-out;
     z-index: 12;
-
+    
     .menu-collapse-wrapper {
       height: 100%;
       width: 48px;
       text-align: center;
       cursor: pointer;
-
+      
       i {
         transition: all 0.3s ease-in-out;
       }
     }
-
+    
     .title {
       height: 100%;
       font-weight: bold;
     }
-
+    
     .menu-list {
       .menu-item {
         position: relative;
@@ -301,17 +319,17 @@
         height: 48px;
         text-align: center;
         font-size: 0px;
-
+        
         &:hover {
           cursor: pointer;
           background-color: #F5F5F5;
         }
-
+        
         .icon {
           vertical-align: middle;
           font-size: 24px;
         }
-
+        
         .text {
           display: inline-block;
           vertical-align: middle;
@@ -321,7 +339,7 @@
       }
     }
   }
-
+  
   .content-wrapper {
     position: fixed;
     left: $siderbarWidth;
@@ -331,7 +349,7 @@
     padding: 16px;
     overflow: auto;
     transition: all 0.3s ease-in-out;
-
+    
     .content {
       position: relative;
       width: 100%;

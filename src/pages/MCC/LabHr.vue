@@ -1,8 +1,12 @@
 <template>
   <div class="home">
-
-    <p>首wwwwwwwwwwwww页</p>
-    <p>首页2222222/p>
+    <p>工时管理</p>
+    <p>首页</p>
+    <p>首页</p>
+    <p>首页</p>
+    <p>首页</p>
+    <p>首页</p>
+    <p>首页</p>
     <p>首页</p>
     <p>首页</p>
     <p>首页</p>

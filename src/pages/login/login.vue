@@ -2,7 +2,7 @@
   <div class="login">
     <div class="middle-wrapper">
       <div class="title-wrapper">
-        <div class="title">VUE-DEMO 后台管理系统</div>
+        <div class="title">通用航空管理系统</div>
       </div>
       <div class="login-form">
         <el-form
