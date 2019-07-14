@@ -1,0 +1,22 @@
+
+{
+  "template_name": "123",
+  "creator_id": "创建者id",
+  "division": "大类",
+  "section": "小类",
+  "description": "描述",
+  "abbr": "简称",
+  "project_id": "如果有项目的话就有项目id",
+  "fields": [
+    {
+      "id": "ATAChapterNumb",
+      "title": "章节号",
+      "type": "ATAChapterNumb"
+    },
+    {
+      "id": "ATAChapterName",
+      "title": "章节名字",
+      "type": "ATAChapterName"
+    }
+  ]
+}

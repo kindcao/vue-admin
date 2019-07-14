@@ -1,0 +1,73 @@
+.content-wrapper {
+  background: #fff;
+}
+.el-form-item {
+  margin-bottom: 15px;
+}
+.el-form-item__label {
+  line-height: 35px;
+}
+.el-form-item__content {
+  line-height: 35px;
+}
+input[type='text'], input[type='number'], input[type='age'] {
+  height: 30px;
+  padding: 0 15px;
+}
+.el-input__icon {
+  line-height: 35px;
+}
+.el-button{
+  height: 30px;
+  padding: 0 15px;
+}
+.el-input--medium .el-input__inner, .el-input__inner {
+  height: 30px;
+  line-height: 25px;
+}
+
+.el-input--medium .el-input__icon {
+  line-height: 25px;
+}
+.el-input-number__decrease, .el-input-number__increase {
+  top:4px;
+  height: 28px;
+  line-height: 28px;
+}
+/* .el-input-number {
+  position: relative;
+  display: inline-block;
+  height: 30px;
+  line-height: 30px;
+}  */
+
+.is-controls-right.el-input-number .el-input-number__increase {
+  height: 14px;
+  line-height: 10px;
+}
+.is-controls-right.el-input-number .el-input-number__decrease {
+  top: 19px;
+  height: 14px;
+  line-height: 10px;
+}
+.el-table td, .el-table th {
+  padding: 8px 0;
+}
+.el-table td, .el-table th {
+  padding: 4px 0;
+  font-size: 9pt;
+}
+.el-col {
+  height:45px;
+  min-height: 45px;
+}
+.el-icon-edit span,.el-icon-delete span{
+  margin-left: 3px;
+  cursor: pointer;
+}
+.el-form .el-form-item__content{margin-left: 20px;}
+
+[x-placement^=bottom].el-popper {
+  margin-top: 3px;
+}
+

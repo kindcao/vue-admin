@@ -8,7 +8,13 @@
   export default {}
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+  body .el-table th.gutter{
+    display: table-cell!important;
+  }
+  body .el-table colgroup.gutter{
+    display: table-cell!important;
+  }
   .root{
     width: 100%;
     height: 100%;

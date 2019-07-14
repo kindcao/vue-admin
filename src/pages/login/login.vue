@@ -1,3 +1,4 @@
+<script src="../../../../src/src/router/route.js"></script>
 <template>
   <div class="login">
     <div class="middle-wrapper">
@@ -10,7 +11,7 @@
           :model="form"
           :rules="rules">
           <el-form-item prop="username">
-            <el-input v-model="form.username" placeholder="请输入账号">
+            <el-input v-model="form.username" placeholder="请输入账号" value="admin">
               <i slot="prefix" class="el-input__icon el-icon-adm-user" style="font-size: 18px;"></i>
             </el-input>
           </el-form-item>
@@ -73,8 +74,8 @@
         passwordType: 'password',
         checkCode: '',
         form: {
-          username: '',
-          password: '',
+          username: '123',
+          password: '123',
           yanzhengma: ''
         },
         rules: {

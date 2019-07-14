@@ -1,8 +1,40 @@
 <template>
   <div class="layout">
+    <div class="topbar-wrapper" style="left: 0; top: 0;">
+      <div class="title float-left">XYJ通用航空工程管理系统</div>
+      <ul class="menu-list float-right">
+        <li v-if="user" class="menu-item" style="padding: 0;">
+          <el-dropdown
+            :show-timeout="10"
+            :hide-timeout="10"
+            @command="handleCommand"
+            style="padding: 0 15px;">
+            <div class="dropdown-content el-dropdown-link">
+              <i class="icon el-icon-adm-usersetup"></i>
+              <span class="text">{{user.name || user.username}}</span>
+            </div>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item command="a">{{user.username}}</el-dropdown-item>
+              <!--el-dropdown-item command="b">{{user.name}}</el-dropdown-item-->
+              <el-dropdown-item command="b">{{user.type.name}}</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </li>
+        <li class="menu-item">
+          <i class="icon el-icon-adm-help"></i>
+        </li>
+        <li class="menu-item" @click="exit">
+          <i class="icon iconfont el-icon-adm-exit"></i>
+        </li>
+      </ul>
+    </div>
     <div class="siderbar-wrapper" :style="{width: this.isCollapsed?'64px':'200px'}">
-      <div class="logo-wrapper">
+      <!--<div class="logo-wrapper" style="background: red">
         公司Logo
+      </div>-->
+      <div class="menu-collapse-wrapper float-left" @click="toggleMenu">
+        <i class="el-icon-adm-menu" :style="{transform: 'rotateZ(' + (this.isCollapsed ? '90' : '0') + 'deg)'}"></i>
+        <span>Collapse</span>
       </div>
       <el-menu
         background-color="#424f63"
@@ -31,41 +63,25 @@
         </template>
       </el-menu>
     </div>
-    <div class="topbar-wrapper" :style="{left: this.isCollapsed?'64px':'200px'}">
-      <div class="menu-collapse-wrapper float-left" @click="toggleMenu">
-        <i class="el-icon-adm-menu" :style="{transform: 'rotateZ(' + (this.isCollapsed ? '90' : '0') + 'deg)'}"></i>
-      </div>
-      <div class="title float-left">维修管理系统</div>
-      <ul class="menu-list float-right">
-        <li v-if="user" class="menu-item" style="padding: 0;">
-          <el-dropdown
-            :show-timeout="10"
-            :hide-timeout="10"
-            @command="handleCommand"
-            style="padding: 0 15px;">
-            <div class="dropdown-content el-dropdown-link">
-              <i class="icon el-icon-adm-usersetup"></i>
-              <span class="text">{{user.name || user.username}}</span>
-            </div>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item command="a">{{user.username}}</el-dropdown-item>
-              <!--el-dropdown-item command="b">{{user.name}}</el-dropdown-item-->
-              <el-dropdown-item command="b">{{user.type.name}}</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
-        </li>
-        <li class="menu-item">
-          <i class="icon el-icon-adm-help"></i>
-        </li>
-        <li class="menu-item" @click="exit">
-          <i class="icon iconfont el-icon-adm-exit"></i>
-        </li>
-      </ul>
-    </div>
+
     <div class="content-wrapper" ref="content-wrapper" :style="{left: this.isCollapsed?'64px':'200px'}">
+      <el-col :span="24" class="breadcrumb-container">
+        <strong class="title">{{$route.name}}</strong>
+        <el-breadcrumb separator="/" class="breadcrumb-inner">
+          <el-breadcrumb-item v-for="item in $route.matched" :key="item.path">
+            {{ item.name }}
+          </el-breadcrumb-item>
+        </el-breadcrumb>
+      </el-col>
+      <el-col :span="24" class="content">
+        <transition name="fade" mode="out-in">
+          <router-view></router-view>
+        </transition>
+      </el-col>
+      <!--
       <div class="content">
         <router-view></router-view>
-      </div>
+      </div>//-->
     </div>
   </div>
 </template>
@@ -89,10 +105,9 @@
             title: '工程管理',
             icon: 'el-icon-adm-linechart',
             children: [
+              {path: '/Engineering/ADCompDoc', title: '适航文件接收'},
               {path: '/Engineering/ADEval', title: '适航指令评估'},
-              {path: '/Engineering/ACConfig', title: '单机构型状态'},
-              {path: '/Engineering/MPEval', title: '维修大纲改版评估'},
-              {path: '/Engineering/OEMDoc', title: 'OEM资料'}
+              {path: '/Engineering/MPEval', title: '维修大纲改版评估'}
             ]
           },
           {
@@ -134,9 +149,20 @@
             ]
           },
           {
-            path: '/system/index',
+            path: '/system',
             title: '系统管理',
-            icon: 'el-icon-adm-project'
+            icon: 'el-icon-adm-project',
+            children: [
+              {path: '/system/ATAChapter', title: 'ATA章节管理'},
+              {path: '/system/ACType', title: '飞机商业型'},
+              {path: '/system/ConstantValTree', title: '常量字典'},
+              {path: '/system/ACInfo', title: '飞机信息'},
+              {path: '/system/ProductModel', title: '产品型号'},
+              {path: '/system/Authority', title: '适航局'},
+              {path: '/system/OEMDoc', title: 'OEM发布文档'},
+              {path: '/system/MelControl', title: '最低清单控制'},
+              {path: '/system/groupedTable', title: 'Table群组'}
+            ]
           },
           {
             path: '/user/index',
@@ -216,37 +242,56 @@
 </script>
 <style lang="scss">
   @import '../../assets/styles/variable';
-  
+
   .siderbar-wrapper {
     position: fixed;
-    top: 0;
+    top: $topbarHeight;
     bottom: 0;
     left: 0;
     width: $siderbarWidth;
     z-index: 11;
-    background-color: $siderbarBackgroundColor;
-    transition: all 0.3s ease-in-out;
+    background-color: $siderbarBackgroundColor; // #20a0ff;
+    /*transition: all 0.3s ease-in-out;*/
     
     .logo-wrapper {
-      height: 40px;
-      line-height: 40px;
       padding: 16px 0;
       text-align: center;
-      font-size: 24px;
+      font-size: 22px;
       color: #FFFFFF;
-      color: #65CEA7;
+      /*color: #65CEA7;*/
     }
-    
+    .menu-collapse-wrapper {
+      height: 50px;
+      line-height: 50px;
+      width: 100%;
+      cursor: pointer;
+      span {
+        color: white;
+        width: 100px;
+        font-size: 12pt;
+      }
+      i {
+        margin-left:20px;
+        width: 25px;
+        transition: all 0.3s ease-in-out;
+        color: white;
+      }
+    }
+
+    .title {
+      height: 100%;
+      font-weight: bold;
+    }
     .menu-wrapper {
       position: absolute;
-      top: 72px;
+      top: 50px;
       bottom: 0;
       width: 100%;
       border-right: none;
       transition: all 0.3s ease-in-out;
       
       &:not(.el-menu--collapse) {
-        overflow-y: auto;
+        overflow-y: hidden;
         overflow-x: hidden;
       }
       
@@ -316,7 +361,7 @@
         float: left;
         padding: 0 15px;
         min-width: 45px;
-        height: 48px;
+        height: 38px;
         text-align: center;
         font-size: 0px;
         
@@ -338,8 +383,22 @@
         }
       }
     }
+
+
   }
-  
+  .el-menu-item, .el-submenu__title {
+    height: 45px;
+    line-height: 45px;
+    font-size: 10pt;
+  }
+  .el-submenu .el-menu-item {
+    height: 35px;
+    line-height: 35px;
+    padding: 0 45px;
+    min-width: 200px;
+    font-size: 10pt;
+  }
+
   .content-wrapper {
     position: fixed;
     left: $siderbarWidth;
@@ -349,7 +408,21 @@
     padding: 16px;
     overflow: auto;
     transition: all 0.3s ease-in-out;
-    
+    .breadcrumb-container {
+      //margin-bottom: 15px;
+      .title {
+        width: 200px;
+        float: left;
+        color: #475669;
+      }
+      .breadcrumb-inner {
+        float: right;
+      }
+    }
+    .content-wrapper {
+      background-color: #fff;
+      box-sizing: border-box;
+    }
     .content {
       position: relative;
       width: 100%;

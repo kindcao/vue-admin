@@ -31,8 +31,76 @@ const lineData = require('../src/data/charts/line');
 const pieData = require('../src/data/charts/pie');
 const tableData = require('../src/data/tables/tables');
 const formData = require('../src/data/form/form');
+const ATAChapterData = require('../src/data/tables/ATAChapter');
+const ATAChapterFormData = require('../src/data/ATAChatper/form');
+const ATAChapterServerData = require('../src/data/tables/servertable');
+const ADCompDoc = require('../src/data/ADCompDoc/ADCompDoc');
 
 var apiRoutes = express.Router();
+
+apiRoutes.get('/getQueryADCompDocData', function (req, res) {
+  let query = req.query;
+  let per_page = query.per_page;
+  let cur_page = query.cur_page;
+
+  let min = per_page * cur_page - per_page;
+  let max = per_page * cur_page;
+  var where  = true;
+  /*
+  var ADCompDocList = ADCompDoc.filter(function (e) {
+    return e.issue_auth_id ==query.issue_auth_id;
+  });**/
+
+  let arr = ADCompDoc.slice(min, max);
+  res.json({
+    errno: 0,
+    data: {
+      table: arr,
+      total: ADCompDoc.length
+    }
+  });
+});
+
+apiRoutes.get('/getATAChapterFormData', function (req, res) {
+  res.json({
+    errno: 0,
+    data: ATAChapterFormData
+  });
+});
+apiRoutes.get('/getATAChapterServerData', function (req, res) {
+  let query = req.query;
+  let per_page = query.per_page;
+  let cur_page = query.cur_page;
+
+  let min = per_page * cur_page - per_page;
+  let max = per_page * cur_page;
+
+  let arr = ATAChapterServerData.slice(min, max);
+  res.json({
+    errno: 0,
+    data: {
+      table: arr,
+      total: ATAChapterServerData.length
+    }
+  });
+});
+apiRoutes.get('/getATAChapterData', function (req, res) {
+  let query = req.query;
+  let per_page = query.per_page;
+  let cur_page = query.cur_page;
+
+  let min = per_page * cur_page - per_page;
+  let max = per_page * cur_page;
+
+  let arr = ATAChapterData.slice(min, max);
+  res.json({
+    errno: 0,
+    data: {
+      table: arr,
+      total: ATAChapterData.length
+    }
+  });
+});
 
 apiRoutes.get('/addressData', function (req, res) {
   res.json({

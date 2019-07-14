@@ -44,6 +44,36 @@ export const otherRouter = {
       name: 'home',
       title: '首页',
       component: () => import('src/pages/home/home')
+    },
+    {
+      path: '/system/OEMDocAdd',
+      name: 'OEMDocAdd',
+      title: '首页',
+      component: () => import('src/pages/system/OEMDocAdd')
+    },
+    {
+      path: '/system/MelControlAdd',
+      name: 'MelControlAdd',
+      title: '最小清单控制编辑',
+      component: () => import('src/pages/system/MelControlAdd')
+    },
+    {
+      path: '/system/ACInfoAdd',
+      name: 'ACInfoAdd',
+      title: '飞机信息',
+      component: () => import('src/pages/system/ACInfoAdd')
+    },
+    {
+      path: '/Engineering/ADCompDocAdd',
+      name: 'ADCompDocAdd',
+      title: '适航文件接收',
+      component: () => import('src/pages/Engineering/ADCompDocAdd')
+    },
+    {
+      path: '/Engineering/ADCompEvalAdd',
+      name: 'ADCompEvalAdd',
+      title: '适航文件评价',
+      component: () => import('src/pages/Engineering/ADCompEvalAdd')
     }
   ]
 };
@@ -60,28 +90,22 @@ export const appRouter = [
     component: Layout,
     children: [
       {
+        path: 'AdCompDoc',
+        name: 'AdCompDoc',
+        title: '适航文件接收',
+        component: () => import('src/pages/Engineering/ADCompDoc')
+      },
+      {
         path: 'ADEval',
         name: 'ADEval',
         title: '适航指令评估',
         component: () => import('src/pages/Engineering/ADEval')
       },
       {
-        path: 'ACConfig',
-        name: 'ACConfig',
-        title: '单机构型状态',
-        component: () => import('src/pages/Engineering/ACConfig')
-      },
-      {
         path: 'MPEval',
         name: 'MPEval',
         title: '维修大纲改版评估',
         component: () => import('src/pages/Engineering/MPEval')
-      },
-      {
-        path: 'OEMDoc',
-        name: 'OEMDoc',
-        title: 'OEM资料',
-        component: () => import('src/pages/Engineering/OEMDoc')
       }
     ]
   },
@@ -174,7 +198,7 @@ export const appRouter = [
   },
   {
     path: '/form',
-    name: 'form',
+    name: 'ADCompDoc.json',
     title: '表单管理',
     meta: {
       requireAuth: true
@@ -203,6 +227,60 @@ export const appRouter = [
         name: 'system_index',
         title: '系统管理',
         component: () => import('src/pages/system/index/index')
+      },
+      {
+        path: 'ATAChapter',
+        name: 'ATAChapter',
+        title: 'ATA章节管理',
+        component: () => import('src/pages/system/ATAChapter')
+      },
+      {
+        path: 'ACType',
+        name: 'ACType',
+        title: '飞机商业型',
+        component: () => import('src/pages/system/ACType')
+      },
+      {
+        path: 'ACInfo',
+        name: 'ACInfo',
+        title: '飞机信息',
+        component: () => import('src/pages/system/ACInfo')
+      },
+      {
+        path: 'ConstantValTree',
+        name: 'ConstantValTree',
+        title: '常量字典2',
+        component: () => import('src/pages/system/ConstantValTree')
+      },
+      {
+        path: 'ProductModel',
+        name: 'ProductModel',
+        title: '产品型号',
+        component: () => import('src/pages/system/ProductModel')
+      },
+      {
+        path: 'Authority',
+        name: 'Authority',
+        title: '适航局',
+        component: () => import('src/pages/system/Authority')
+      },
+      {
+        path: 'OEMDoc',
+        name: 'OEMDoc',
+        title: 'OEM发布文档',
+        component: () => import('src/pages/system/OEMDoc')
+      },
+      {
+        path: 'MelControl',
+        name: 'MelControl',
+        title: '最低清单控制',
+        component: () => import('src/pages/system/MelControl')
+      },
+      {
+        path: 'groupedTable',
+        name: 'groupedTable',
+        title: 'groupedTable',
+        component: () => import('src/pages/system/groupedTable')
       }
     ]
   },

@@ -1,0 +1,51 @@
+[
+  {
+    "ATA_NO": "1",
+    "ATAChapterNumb": "9",
+    "ATAChapterName": "TOWING AND TAXIING",
+    "ATAChapterOperUser": "[P000001]张三",
+    "ATAChapterOperDate": "2019-05-20 11:35:21"
+  },
+  {
+    "ATA_NO": "2",
+    "ATAChapterNumb": "25",
+    "ATAChapterName": "EQUIPMENT /FURNISHINGS",
+    "ATAChapterOperUser": "[P000001]张三",
+    "ATAChapterOperDate": "2019-05-20 11:36:01"
+  },
+  {
+    "ATA_NO": "3",
+    "ATAChapterNumb": "30",
+    "ATAChapterName": "ICE AND RAIN PROTECTION",
+    "ATAChapterOperUser": "[P000001]张三",
+    "ATAChapterOperDate": "2019-05-20 11:36:47"
+  },
+  {
+    "ATA_NO": "4",
+    "ATAChapterNumb": "30",
+    "ATAChapterName": "ICE AND RAIN PROTECTION",
+    "ATAChapterOperUser": "[P000001]张三",
+    "ATAChapterOperDate": "2019-05-20 11:36:47"
+  },
+  {
+    "ATA_NO": "5",
+    "ATAChapterNumb": "30",
+    "ATAChapterName": "ICE AND RAIN PROTECTION",
+    "ATAChapterOperUser": "[P000001]张三",
+    "ATAChapterOperDate": "2019-05-20 11:36:47"
+  },
+  {
+    "ATA_NO": "6",
+    "ATAChapterNumb": "30",
+    "ATAChapterName": "ICE AND RAIN PROTECTION",
+    "ATAChapterOperUser": "[P000001]张三",
+    "ATAChapterOperDate": "2019-05-20 11:36:47"
+  },
+  {
+    "ATA_NO": "7",
+    "ATAChapterNumb": "30",
+    "ATAChapterName": "ICE AND RAIN PROTECTION",
+    "ATAChapterOperUser": "[P000001]张三",
+    "ATAChapterOperDate": "2019-05-20 11:36:47"
+  }
+]

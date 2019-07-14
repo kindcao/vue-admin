@@ -88,25 +88,25 @@
       </template>
 
 
-      <!--<el-form-item label="即时配送">-->
-      <!--<el-switch v-model="form.delivery"></el-switch>-->
-      <!--</el-form-item>-->
-      <!--<el-form-item label="活动性质">-->
-      <!--<el-checkbox-group v-model="form.type">-->
-      <!--<el-checkbox label="美食/餐厅线上活动" name="type"></el-checkbox>-->
-      <!--<el-checkbox label="地推活动" name="type"></el-checkbox>-->
-      <!--<el-checkbox label="线下主题活动" name="type"></el-checkbox>-->
-      <!--<el-checkbox label="单纯品牌曝光" name="type"></el-checkbox>-->
-      <!--</el-checkbox-group>-->
-      <!--</el-form-item>-->
+      <el-form-item label="即时配送">
+      <el-switch v-model="form.delivery"></el-switch>
+    </el-form-item>
+      <el-form-item label="活动性质">
+        <el-checkbox-group v-model="form.type">
+          <el-checkbox label="美食/餐厅线上活动" name="type"></el-checkbox>
+          <el-checkbox label="地推活动" name="type"></el-checkbox>
+          <el-checkbox label="线下主题活动" name="type"></el-checkbox>
+          <el-checkbox label="单纯品牌曝光" name="type"></el-checkbox>
+        </el-checkbox-group>
+      </el-form-item>
 
-      <!--<el-form-item label="活动形式">-->
-      <!--<el-input type="textarea" v-model="form.desc"></el-input>-->
-      <!--</el-form-item>-->
-      <!--<el-form-item>-->
-      <!--<el-button type="primary" @click="onSubmit">立即创建</el-button>-->
-      <!--<el-button>取消</el-button>-->
-      <!--</el-form-item>-->
+      <el-form-item label="活动形式">
+        <el-input type="textarea" v-model="form.desc"></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="onSubmit">立即创建</el-button>
+        <el-button>取消</el-button>
+      </el-form-item>
     </el-form>
   </div>
 </template>
