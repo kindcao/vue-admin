@@ -6,22 +6,22 @@ import {
 } from 'element-ui';
 import store from './store/index';
 import router from './router/index';
-import { sessionStorage } from 'src/assets/js/storage';
+import {sessionStorage} from 'src/assets/js/storage';
 
-if (!store.state.token) {
-  store.commit('SET_TOKEN', sessionStorage.getItem('token'));
+if (!store.state.token_access) {
+  store.commit('SET_TOKEN_ACCESS', sessionStorage.getItem('token_access'));
 }
 
 // axios 配置
 
 const http = axios.create({
-  baseURL: '/api',
+  baseURL: 'http://127.0.0.1:8080/api',
   timeout: 5000,
   headers: {
     'Content-Type': 'application/json;charset=UTF-8'
   },
   transformRequest: [function (data, headers) {
-    headers.token = store.state.token;
+    headers.token_access = store.state.token_access;
     if (headers['Content-type'] === 'multipart/form-data') {
       return data;
     } else {
@@ -40,15 +40,16 @@ http.interceptors.request.use(config => {
     lock: true,
     text: '正在请求数据...'
   });
-  
+
   // 开发环境下，如果请求是 post,put,patch,则打印数据体，方便调试
   if (process.env.NODE_ENV === 'development') {
-    const { method } = config;
+    const {method} = config;
     if (method === 'post' || method === 'put' || method === 'patch') {
+      console.log('request -->');
       console.log(config.data);
     }
   }
-  
+
   return config;
 }, error => {
   loadingInstance.close();
@@ -61,13 +62,13 @@ http.interceptors.request.use(config => {
 // 响应拦截器
 http.interceptors.response.use(res => {
   loadingInstance.close();
+  console.log('response <--');
   console.log(res);
-  return res.data;
+  return res;
 }, error => {
   loadingInstance.close();
   if (error && error.response) {
     console.log(error.response);
-    
     switch (error.response.status) {
       // 401 token失效
       case 401:
@@ -85,23 +86,23 @@ http.interceptors.response.use(res => {
           }
         });
         break;
-      
+
       // 403 服务器拒绝访问
       case 403:
         router.push('/error/403');
         break;
-      
+
       // 404 访问的资源不存在
       case 404:
         router.push('/error/404');
         break;
-      
+
       // 500 服务器错误
       case 500:
         router.push('/error/500');
         break;
     }
-    
+
     return Promise.reject(error);
   }
 });
