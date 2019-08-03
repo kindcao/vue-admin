@@ -1,9 +1,8 @@
-<script src="../../../../src/src/router/route.js"></script>
 <template>
   <div class="login">
     <div class="middle-wrapper">
       <div class="title-wrapper">
-        <div class="title">通用航空管理系统</div>
+        <div class="title">XYJ管理系统</div>
       </div>
       <div class="login-form">
         <el-form
@@ -56,9 +55,9 @@
   import validateCode from 'src/components/ValidateCode/index';
 
   export default {
-    created () {
+    created() {
     },
-    data () {
+    data() {
       var checkYanzhengma = (rule, value, callback) => {
         value = value.toUpperCase();
         if (value === '') {
@@ -74,42 +73,62 @@
         passwordType: 'password',
         checkCode: '',
         form: {
-          username: '123',
-          password: '123',
+          username: 'admin',
+          password: 'admin1231',
           yanzhengma: ''
         },
         rules: {
           username: [
-            { required: true, message: '账号不能为空', trigger: 'blur' }
+            {required: true, message: '账号不能为空', trigger: 'blur'}
           ],
           password: [
-            { required: true, message: '密码不能为空', trigger: 'blur' }
+            {required: true, message: '密码不能为空', trigger: 'blur'}
           ],
           yanzhengma: [
-            { validator: checkYanzhengma, trigger: 'blur' }
+            {validator: checkYanzhengma, trigger: 'blur'}
           ]
         }
       };
     },
     methods: {
-      _setCheckCode (value) {
+      _setCheckCode(value) {
         this.checkCode = value;
       },
-      _togglePasswordType () {
+      _togglePasswordType() {
         if (this.passwordType === 'password') {
           this.passwordType = 'text';
         } else {
           this.passwordType = 'password';
         }
       },
-      loginHandle (formName) {
+      loginHandle(formName) {
         this.$refs[formName].validate(valid => {
           if (valid) {
-            this.login();
+            this.axios.post('/sys/sysuser/login', {
+              'passwd': this.form.password,
+              'userName': this.form.username
+            }).then((res) => {
+              if (res.data.status === 0) {
+                let accessToken = res.headers.token_access;
+                let refreshToken = res.headers.token_refresh;
+                this.$store.commit('SET_TOKEN_ACCESS', accessToken);
+                this.$store.commit('SET_TOKEN_REFRESH', refreshToken);
+                //
+                let User = res.data.data;
+                this.$store.commit('SET_USER', User);
+                this.$router.replace('home');
+              } else {
+                this.$message({
+                  type: 'error',
+                  message: res.data.data,
+                  center: true
+                });
+              }
+            });
           }
-        });
+        })
       },
-      login () {
+      login() {
         /*
          *  在这边可以进行登陆请求
          *  将请求返回的Token对象存到store中
@@ -151,6 +170,7 @@
         font-weight: bold;
         color: #ffffff;
       }
+
       .login-form {
         position: relative;
         margin: 0 auto;

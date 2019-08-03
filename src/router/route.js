@@ -294,10 +294,10 @@ export const appRouter = [
     component: Layout,
     children: [
       {
-        path: 'index',
-        name: 'user_index',
+        path: 'SysUser',
+        name: 'SysUser',
         title: '用户管理',
-        component: () => import('src/pages/user/index')
+        component: () => import('src/pages/user/SysUser')
       }
     ]
   },
