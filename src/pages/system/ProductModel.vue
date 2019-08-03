@@ -222,7 +222,7 @@
       queryData () {
         let sef = this;
         $.ajax({
-          url: 'http://106.12.133.158:88/api/static/prodmodel/query',
+          url: 'http://106.12.133.158:1881/api/static/prodmodel/query',
           type: 'POST',
           data: '{' +
                   "  'obj': {" +
@@ -290,7 +290,7 @@
           this.listLoading = true;
           // NProgress.start();
           $.ajax({
-            url: 'http://106.12.133.158:88/api/static/prodmodel/delete',
+            url: 'http://106.12.133.158:1881/api/static/prodmodel/delete',
             type: 'POST',
             data: '[' + row.id + ']',
             contentType: 'application/json; charset=utf-8',
@@ -318,7 +318,7 @@
       initConstantVal: function () {
         var self = this;
         $.ajax({
-          url: 'http://106.12.133.158:88/api/static/cnstval/querySub',
+          url: 'http://106.12.133.158:1881/api/static/cnstval/querySub',
           type: 'POST',
           data: '{' +
             "  'obj': {" +
@@ -372,7 +372,7 @@
               // NProgress.start();
               let para = Object.assign({}, this.editForm);
               $.ajax({
-                url: 'http://106.12.133.158:88/api/static/prodmodel/update',
+                url: 'http://106.12.133.158:1881/api/static/prodmodel/update',
                 type: 'POST',
                 data: '{' +
                   "    'id': '" + para.id + "'," +
@@ -421,7 +421,7 @@
               // NProgress.start();
               let para = Object.assign({}, this.addForm);
               $.ajax({
-                url: 'http://106.12.133.158:88/api/static/prodmodel/add',
+                url: 'http://106.12.133.158:1881/api/static/prodmodel/add',
                 type: 'POST',
                 data: '{' +
                   "    'id': '" + para.id + "'," +
@@ -477,7 +477,7 @@
           sef.listLoading = true;
           // NProgress.start();
           $.ajax({
-            url: 'http://106.12.133.158:88/api/static/prodmodel/delete',
+            url: 'http://106.12.133.158:1881/api/static/prodmodel/delete',
             type: 'POST',
             data: '[' + ids + ']',
             contentType: 'application/json; charset=utf-8',

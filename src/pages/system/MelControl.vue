@@ -28,7 +28,7 @@
               <el-option
                 v-for="item in AuthorityListMain"
                 :key="item.id"
-                :label="item.authName"
+                :label="item.authNameAbbr"
                 :value="item.id">
               </el-option>
             </el-select>
@@ -121,7 +121,7 @@
         </el-form-item>
         <el-form-item label="适用适航局" prop="melAuthId">
           <el-select v-model="addForm.melAuthId"  placeholder="请选择" style="width:100%">
-            <el-option  v-for="item in AuthorityListMain" :key="item.id" :label="item.authName" :value="item.id"></el-option>
+            <el-option  v-for="item in AuthorityListMain" :key="item.id" :label="item.authNameAbbr" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="生效日期" prop="melDateEff">
@@ -225,7 +225,7 @@
       queryData () {
         let sef = this;
         $.ajax({
-          url: 'http://106.12.133.158:88/api/pm/melcontrol/query',
+          url: 'http://106.12.133.158:1881/api/pm/melcontrol/query',
           type: 'POST',
           data: '{' +
                   "  'obj': {" +
@@ -309,7 +309,7 @@
       changeAuthority: function (id) {
         let selectedWorkName = this.AuthorityListMain.filter(item => item.id === id);
         if (selectedWorkName === null || selectedWorkName.length === 0) return;
-        this.addForm.melAuthId = selectedWorkName[0].authName;
+        this.addForm.melAuthId = selectedWorkName[0].authNameAbbr;
       },
       // 删除
       handleDel: function (index, row) {
@@ -320,7 +320,7 @@
           this.listLoading = true;
           // NProgress.start();
           $.ajax({
-            url: 'http://106.12.133.158:88/api/pm/melcontrol/delete',
+            url: 'http://106.12.133.158:1881/api/pm/melcontrol/delete',
             type: 'POST',
             data: '[' + row.id + ']',
             contentType: 'application/json; charset=utf-8',
@@ -348,7 +348,7 @@
       initConstantVal: function () {
         var self = this;
         $.ajax({
-          url: 'http://106.12.133.158:88/api/static/actype/query',
+          url: 'http://106.12.133.158:1881/api/static/actype/query',
           type: 'POST',
           data: '{' +
             "  'obj': {" +
@@ -372,11 +372,11 @@
         });
 
         $.ajax({
-          url: 'http://106.12.133.158:88/api/static/authority/query',
+          url: 'http://106.12.133.158:1881/api/static/authority/query',
           type: 'POST',
           data: '{' +
             "  'obj': {" +
-            "    'authName': null" +
+            "    'authNameAbbr': null" +
             '  }' +
             '}',
           contentType: 'application/json; charset=utf-8',
@@ -425,7 +425,7 @@
               // NProgress.start();
               let para = Object.assign({}, this.addForm);
               $.ajax({
-                url: 'http://106.12.133.158:88/api/pm/melcontrol/add',
+                url: 'http://106.12.133.158:1881/api/pm/melcontrol/add',
                 type: 'POST',
                 data: '{' +
                   "    'id': '" + para.id + "'," +
@@ -484,7 +484,7 @@
           sef.listLoading = true;
           // NProgress.start();
           $.ajax({
-            url: 'http://106.12.133.158:88/api/pm/melcontrol/delete',
+            url: 'http://106.12.133.158:1881/api/pm/melcontrol/delete',
             type: 'POST',
             data: '[' + ids + ']',
             contentType: 'application/json; charset=utf-8',

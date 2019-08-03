@@ -27,7 +27,7 @@
       <el-col :span="18">
         <el-form-item label="适用适航局" prop="melAuthId">
           <el-select v-model="form.melAuthId"  placeholder="请选择" style="width:100%">
-            <el-option  v-for="item in AuthoritySubList" :key="item.id" :label="item.authName" :value="item.id"></el-option>
+            <el-option  v-for="item in AuthoritySubList" :key="item.id" :label="item.authNameAbbr" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
       </el-col>
@@ -207,7 +207,7 @@
         }
         let self = this;
         $.ajax({
-          url: 'http://106.12.133.158:88/api/pm/melcontrol/query',
+          url: 'http://106.12.133.158:1881/api/pm/melcontrol/query',
           type: 'POST',
           data: '{' +
             "  'obj': {" +
@@ -223,7 +223,6 @@
               let results = result.data.filter(item => item.id === id);
               if (results !== null && results !== undefined && results.length > 0) {
                 let row = results[0];
-                // debugger;
                 // self.changeSelectVal(row.id);
                 if (row.melDateEff !== null && row.melDateEff !== '') {
                   self.$set(self.form, 'melDateEff', row.melDateEff);
@@ -247,7 +246,7 @@
       OEMDocList () {
         let sef = this;
         $.ajax({
-          url: 'http://106.12.133.158:88/api/pm/oemdoc/query',
+          url: 'http://106.12.133.158:1881/api/pm/oemdoc/query',
           type: 'POST',
           data: '{' +
             "  'obj': {" +
@@ -320,7 +319,7 @@
           this.listLoading = true;
           // NProgress.start();
           $.ajax({
-            url: 'http://106.12.133.158:88/api/pm/oemdoc/delete',
+            url: 'http://106.12.133.158:1881/api/pm/oemdoc/delete',
             type: 'POST',
             data: '[' + row.id + ']',
             contentType: 'application/json; charset=utf-8',
@@ -348,7 +347,7 @@
       initConstantVal: function () {
         var self = this;
         $.ajax({
-          url: 'http://106.12.133.158:88/api/static/actype/query',
+          url: 'http://106.12.133.158:1881/api/static/actype/query',
           type: 'POST',
           data: '{' +
             "  'obj': {" +
@@ -372,11 +371,11 @@
         });
 
         $.ajax({
-          url: 'http://106.12.133.158:88/api/static/authority/query',
+          url: 'http://106.12.133.158:1881/api/static/authority/query',
           type: 'POST',
           data: '{' +
             "  'obj': {" +
-            "    'authName': null" +
+            "    'authNameAbbr': null" +
             '  }' +
             '}',
           contentType: 'application/json; charset=utf-8',
@@ -404,9 +403,8 @@
               sef.editLoading = true;
               // NProgress.start();
               let para = Object.assign({}, this.form);
-              debugger;
               $.ajax({
-                url: 'http://106.12.133.158:88/api/pm/melcontrol/update',
+                url: 'http://106.12.133.158:1881/api/pm/melcontrol/update',
                 type: 'POST',
                 data: '{' +
                   "    'id': '" + para.id + "'," +
@@ -458,7 +456,7 @@
               // NProgress.start();
               let para = Object.assign({}, this.addForm);
               $.ajax({
-                url: 'http://106.12.133.158:88/api/pm/oemdoc/add',
+                url: 'http://106.12.133.158:1881/api/pm/oemdoc/add',
                 type: 'POST',
                 data: '{' +
                   "    'id': '" + para.id + "'," +
@@ -517,7 +515,7 @@
           sef.listLoading = true;
           // NProgress.start();
           $.ajax({
-            url: 'http://106.12.133.158:88/api/pm/oemdoc/delete',
+            url: 'http://106.12.133.158:1881/api/pm/oemdoc/delete',
             type: 'POST',
             data: '[' + ids + ']',
             contentType: 'application/json; charset=utf-8',

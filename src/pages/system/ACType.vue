@@ -239,7 +239,7 @@
       queryData () {
         let sef = this;
         $.ajax({
-          url: 'http://106.12.133.158:88/api/static/actype/query',
+          url: 'http://106.12.133.158:1881/api/static/actype/query',
           type: 'POST',
           data: '{' +
                   "  'obj': {" +
@@ -298,7 +298,7 @@
           this.listLoading = true;
           // NProgress.start();
           $.ajax({
-            url: 'http://106.12.133.158:88/api/static/actype/delete',
+            url: 'http://106.12.133.158:1881/api/static/actype/delete',
             type: 'POST',
             data: '[' + row.id + ']',
             contentType: 'application/json; charset=utf-8',
@@ -355,7 +355,7 @@
               // NProgress.start();
               let para = Object.assign({}, this.editForm);
               $.ajax({
-                url: 'http://106.12.133.158:88/api/static/actype/update',
+                url: 'http://106.12.133.158:1881/api/static/actype/update',
                 type: 'POST',
                 data: '{' +
                   "    'id': '" + para.id + "'," +
@@ -408,7 +408,7 @@
               let para = Object.assign({}, this.addForm);
 
               $.ajax({
-                url: 'http://106.12.133.158:88/api/static/actype/add',
+                url: 'http://106.12.133.158:1881/api/static/actype/add',
                 type: 'POST',
                 data: '{' +
                   "    'id': '" + para.id + "'," +
@@ -468,7 +468,7 @@
           sef.listLoading = true;
           // NProgress.start();
           $.ajax({
-            url: 'http://106.12.133.158:88/api/static/actype/delete',
+            url: 'http://106.12.133.158:1881/api/static/actype/delete',
             type: 'POST',
             data: '[' + ids + ']',
             contentType: 'application/json; charset=utf-8',

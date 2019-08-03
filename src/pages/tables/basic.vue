@@ -65,6 +65,7 @@
   </div>
 </template>
 <script>
+  import {formatDate} from 'src/utils/utils';
   import score from 'src/components/Score/index';
 
   const POSITIVE = 0;
@@ -121,7 +122,7 @@
       },
       formatDate (time) {
         let date = new Date(time);
-        return this.utils.formatDate(date, 'yyyy-MM-dd hh:mm:ss');
+        return formatDate(date, 'yyyy-MM-dd hh:mm:ss');
       }
     },
     components: {

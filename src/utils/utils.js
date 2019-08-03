@@ -79,7 +79,7 @@ export default {
   },
   generateId: function (n) {
     if (n > 21) return null;
-    return -(parseInt((Math.random() + 1) * Math.pow(10, n - 1)) + parseInt(Math.random() * 3));
+    return (parseInt((Math.random() + 1) * Math.pow(10, n - 1)) + parseInt(Math.random() * 3));
   },
   padLeftZero: function (str) {
     return ('00' + str).substr(str.length);
@@ -121,5 +121,28 @@ export default {
       return true;
     }
     return false;
-  }
+  },
+  isNotEmpty (val) {
+    if (val !== null && val !== '' && val !== undefined) {
+      return true;
+    }
+    return false;
+  }/* ,
+  encrypt(data) {
+    // 新建JSEncrypt对象
+    let encryptor = new JSEncrypt();
+    // 设置公钥
+    encryptor.setPublicKey(publicKey);
+    // 加密数据
+    return encryptor.encrypt(data);
+  },
+  // 解密
+  decrypt(data) {
+    // 新建JSEncrypt对象
+    let decrypt= new this.Encrypt.JSEncrypt();
+    // 设置私钥
+    decrypt.setPrivateKey(privateKey);
+    // 解密数据
+    decrypt.decrypt(data);
+  } */
 };

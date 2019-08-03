@@ -19,4 +19,7 @@
     width: 100%;
     height: 100%;
   }
+  .el-scrollbar__thumb {
+    width: 0px!important;
+  }
 </style>

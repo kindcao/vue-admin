@@ -196,7 +196,7 @@
         }
         let self = this;
         $.ajax({
-          url: 'http://106.12.133.158:88/api/pm/oemdoc/query',
+          url: 'http://106.12.133.158:1881/api/pm/oemdoc/query',
           type: 'POST',
           data: '{' +
             "  'obj': {" +
@@ -219,7 +219,7 @@
                 // self.form.docName = row.docName;
                 // self.form.docVer = row.docVer;
                 if (row.effcDate !== null && row.effcDate !== '') {
-                  self.$set(self.form, 'effcDate', '2019-04-20');
+                  self.$set(self.form, 'effcDate', self.utils.dateToString(row.effcDate));
                   // self.form.effcDate = new Date(2019, 3, 2); // self.stringToDate(row.effcDate); // self.stringToDate(row.effcDate);
                 }
                 // self.form.evalConclusion = row.evalConclusion;
@@ -245,7 +245,7 @@
       melControl () {
         let sef = this;
         $.ajax({
-          url: 'http://106.12.133.158:88/api/pm/oemdoc/query',
+          url: 'http://106.12.133.158:1881/api/pm/oemdoc/query',
           type: 'POST',
           data: '{' +
             "  'obj': {" +
@@ -337,7 +337,7 @@
           this.listLoading = true;
           // NProgress.start();
           $.ajax({
-            url: 'http://106.12.133.158:88/api/pm/oemdoc/delete',
+            url: 'http://106.12.133.158:1881/api/pm/oemdoc/delete',
             type: 'POST',
             data: '[' + row.id + ']',
             contentType: 'application/json; charset=utf-8',
@@ -365,7 +365,7 @@
       initConstantVal: function () {
         var self = this;
         $.ajax({
-          url: 'http://106.12.133.158:88/api/static/actype/query',
+          url: 'http://106.12.133.158:1881/api/static/actype/query',
           type: 'POST',
           data: '{' +
             "  'obj': {" +
@@ -398,7 +398,7 @@
               // NProgress.start();
               let para = Object.assign({}, this.editForm);
               $.ajax({
-                url: 'http://106.12.133.158:88/api/pm/oemdoc/update',
+                url: 'http://106.12.133.158:1881/api/pm/oemdoc/update',
                 type: 'POST',
                 data: '{' +
                   "    'id': '" + para.id + "'," +
@@ -450,7 +450,7 @@
               // NProgress.start();
               let para = Object.assign({}, this.addForm);
               $.ajax({
-                url: 'http://106.12.133.158:88/api/pm/oemdoc/add',
+                url: 'http://106.12.133.158:1881/api/pm/oemdoc/add',
                 type: 'POST',
                 data: '{' +
                   "    'id': '" + para.id + "'," +
@@ -509,7 +509,7 @@
           sef.listLoading = true;
           // NProgress.start();
           $.ajax({
-            url: 'http://106.12.133.158:88/api/pm/oemdoc/delete',
+            url: 'http://106.12.133.158:1881/api/pm/oemdoc/delete',
             type: 'POST',
             data: '[' + ids + ']',
             contentType: 'application/json; charset=utf-8',

@@ -166,7 +166,7 @@
       findTreeData () {
         let sef = this;
         $.ajax({
-          url: 'http://106.12.133.158:88/api/static/cnstval/query',
+          url: 'http://106.12.133.158:1881/api/static/cnstval/query',
           type: 'POST',
           data: '{' +
            /* "  'obj': {" +
@@ -264,7 +264,7 @@
               self.editLoading = true;
               // NProgress.start();
               let para = Object.assign({}, this.dataForm);
-              let postUrl = 'http://106.12.133.158:88/api/static/cnstval/';
+              let postUrl = 'http://106.12.133.158:1881/api/static/cnstval/';
               if (para.action !== '') {
                 postUrl += para.action;
               }
@@ -319,7 +319,7 @@
           this.listLoading = true;
           // NProgress.start();
           $.ajax({
-            url: 'http://106.12.133.158:88/api/static/cnstval/delete',
+            url: 'http://106.12.133.158:1881/api/static/cnstval/delete',
             type: 'POST',
             data: '[' + row.id + ']',
             contentType: 'application/json; charset=utf-8',

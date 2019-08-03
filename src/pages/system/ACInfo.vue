@@ -55,8 +55,8 @@
     </el-row>
       <el-row>
         <el-col :span="6">
-          <el-form-item label="飞机所属" prop="cnstIdPropertyId" label-width="130px">
-            <el-select v-model="filters.cnstIdPropertyId"  placeholder="请选择" style="width:100%" >
+          <el-form-item label="飞机所属" prop="cnstIdProperty" label-width="130px">
+            <el-select v-model="filters.cnstIdProperty"  placeholder="请选择" style="width:100%" >
               <el-option  v-for="item in ACINFO_ConstantACIList" :key="item.cnstId" :label="item.descTxt" :value="item.cnstId"></el-option>
             </el-select>
           </el-form-item>
@@ -109,10 +109,10 @@
       </el-table-column>
     <el-table-column label="编号" prop="id" align="center" width="70"></el-table-column>
     <el-table-column label="注册号" prop="acReg"  min-width="13%"></el-table-column>
-    <el-table-column label="飞机商业型" prop="acTypeId" min-width="15%"></el-table-column>
-    <el-table-column label="机身型号" prop="prodModelAcId" min-width="15%"></el-table-column>
+    <el-table-column label="飞机商业型" prop="acType" min-width="15%"></el-table-column>
+    <el-table-column label="机身型号" prop="prodModelAc" min-width="15%"></el-table-column>
     <el-table-column label="机身序号" prop="acSn"  min-width="12%"></el-table-column>
-      <el-table-column label="发动机型号" prop="prodModelEng1Id"  min-width="15%"></el-table-column>
+      <el-table-column label="发动机型号" prop="prodModelEng1"  min-width="15%"></el-table-column>
       <el-table-column label="发动机序号" prop="engine1Sn"  min-width="15%"></el-table-column>
     <el-table-column label="操作" min-width="15%" align="center">
       <template scope="scope">
@@ -176,7 +176,7 @@
           engine1Sn: '',
           prodModelApuId: '',
           apuSn: '',
-          cnstIdPropertyId: '',
+          cnstIdProperty: '',
           consEngineOil: '',
           consHydFluid: '',
           consApuOil: '',
@@ -198,7 +198,7 @@
       queryData () {
         let sef = this;
         $.ajax({
-          url: 'http://106.12.133.158:88/api/static/acinfo/query',
+          url: 'http://106.12.133.158:1881/api/static/acinfo/query',
           type: 'POST',
           data: '{' +
                   "  'obj': {" +
@@ -210,7 +210,7 @@
                   "    'engine1Sn': '" + sef.filters.engine1Sn + "'," +
                   "    'prodModelApuId': '" + sef.filters.prodModelApuId + "'," +
                   "    'apuSn': '" + sef.filters.apuSn + "'," +
-                  "    'cnstIdPropertyId': '" + sef.filters.cnstIdPropertyId + "'," +
+                  "    'cnstIdProperty': '" + sef.filters.cnstIdProperty + "'," +
                   "    'consEngineOil': '" + sef.filters.consEngineOil + "'," +
                   "    'consHydFluid': '" + sef.filters.consHydFluid + "'," +
                   "    'consApuOil': '" + sef.filters.consApuOil + "'," +
@@ -262,7 +262,7 @@
       initConstantVal: function () {
         var self = this;
         $.ajax({
-          url: 'http://106.12.133.158:88/api/static/actype/query',
+          url: 'http://106.12.133.158:1881/api/static/actype/query',
           type: 'POST',
           data: "{ 'obj': { 'acType': null } }",
           contentType: 'application/json; charset=utf-8',
@@ -279,16 +279,16 @@
           }
         });
         $.ajax({
-          url: 'http://106.12.133.158:88/api/static/prodmodel/query',
+          url: 'http://106.12.133.158:1881/api/static/prodmodel/query',
           type: 'POST',
-          data: "{ 'obj': { 'cnstIdProdTypeId': \"'productmodel_type_fl','productmodel_type_eng','productmodel_type_apu'\" } }",
+          data: "{ 'obj': { 'cnstIdType': \"'productmodel_type_fl','productmodel_type_eng','productmodel_type_apu'\" } }",
           contentType: 'application/json; charset=utf-8',
           dataType: 'json',
           success: function (result) {
             if (result.status === 0) {
-              self.ACINFO_ProductFuselageSubList = result.data.filter(item => item.cnstIdProdTypeId === 'productmodel_type_fl');
-              self.ACINFO_ProductEngineSubList = result.data.filter(item => item.cnstIdProdTypeId === 'productmodel_type_eng');
-              self.ACINFO_ProductAPUSubList = result.data.filter(item => item.cnstIdProdTypeId === 'productmodel_type_apu');
+              self.ACINFO_ProductFuselageSubList = result.data.filter(item => item.cnstIdType === 'productmodel_type_fl');
+              self.ACINFO_ProductEngineSubList = result.data.filter(item => item.cnstIdType === 'productmodel_type_eng');
+              self.ACINFO_ProductAPUSubList = result.data.filter(item => item.cnstIdType === 'productmodel_type_apu');
             } else {
               console.log(result.status);
             }
@@ -298,9 +298,9 @@
           }
         });
         $.ajax({
-          url: 'http://106.12.133.158:88/api/static/cnstval/query',
+          url: 'http://106.12.133.158:1881/api/static/cnstval/querySub',
           type: 'POST',
-          data: "{ 'obj': { 'cnstId': 'acinfor_property' } }",
+          data: "{ 'obj': { 'cnstId': \"'acinfor_property'\" } }",
           contentType: 'application/json; charset=utf-8',
           dataType: 'json',
           success: function (result) {
@@ -324,7 +324,7 @@
           this.loading = true;
           // NProgress.start();
           $.ajax({
-            url: 'http://106.12.133.158:88/api/static/acinfo/delete',
+            url: 'http://106.12.133.158:1881/api/static/acinfo/delete',
             type: 'POST',
             data: '[' + row.id + ']',
             contentType: 'application/json; charset=utf-8',
@@ -366,7 +366,7 @@
           sef.listLoading = true;
           // NProgress.start();
           $.ajax({
-            url: 'http://106.12.133.158:88/api/static/acinfo/delete',
+            url: 'http://106.12.133.158:1881/api/static/acinfo/delete',
             type: 'POST',
             data: '[' + ids + ']',
             contentType: 'application/json; charset=utf-8',

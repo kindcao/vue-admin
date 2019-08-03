@@ -70,10 +70,10 @@ export const otherRouter = {
       component: () => import('src/pages/Engineering/ADCompDocAdd')
     },
     {
-      path: '/Engineering/ADCompEvalAdd',
-      name: 'ADCompEvalAdd',
+      path: '/Engineering/ADEvalAdd',
+      name: 'ADEvalAdd',
       title: '适航文件评价',
-      component: () => import('src/pages/Engineering/ADCompEvalAdd')
+      component: () => import('src/pages/Engineering/ADEvalAdd')
     }
   ]
 };

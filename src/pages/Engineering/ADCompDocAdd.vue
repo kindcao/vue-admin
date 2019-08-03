@@ -1,6 +1,6 @@
 <template>
   <el-form ref="form" :model="form" :rules="formRules" label-width="120px" @submit.prevent="onSubmit"
-           style="margin:0 0 100px;width:90%;min-width:750px;">
+           style="margin:0 0 100px;width:90%;min-width:850px;">
     <el-row hidden>
       <el-col :span="18">
         <el-form-item label="编码">
@@ -12,7 +12,7 @@
       <el-col :span="8">
         <el-form-item label="适航局" prop="issueAuthId">
           <el-select v-model="form.issueAuthId"  placeholder="请选择适航局" style="width:100%">
-            <el-option  v-for="item in ADAdd_AuthorityList" :key="item.id" :label="item.authName" :value="item.id"></el-option>
+            <el-option  v-for="item in ADAdd_AuthorityList" :key="item.id" :label="item.authNameAbbr" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
       </el-col>
@@ -37,22 +37,22 @@
     <el-row>
       <el-col :span="8">
         <el-form-item label="生效日期" prop="adDateEff">
-          <el-date-picker type="date" placeholder="选择日期" v-model="form.adDateEff" style="width: 100%;"></el-date-picker>
+          <el-date-picker type="date" placeholder="选择日期" v-model="form.adDateEff" format="yyyy-MM-dd" value-format="yyyy-MM-dd"  style="width: 100%;"></el-date-picker>
         </el-form-item>
       </el-col>
     </el-row>
-    <el-row>
+    <el-row :style='fileUploadHeight' class="fileUploadRow">
       <el-col :span="18">
-        <el-form-item label="附件" prop="ad_date_eff">
+        <el-form-item label="生效日期" prop="fileName">
           <el-upload
             class="upload-demo"
-            ref="upload"
-            action=""
-            :on-preview="handlePreview"
-            :on-remove="handleRemove"
-            :file-list="fileList"
-            :auto-upload="false">
-            <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+            action="http://106.12.133.158:1881/api/common/upload"
+            :on-success="uploadSuccess"
+            :on-preview="updatePreview"
+            :on-remove="uploadRemove"
+            :before-upload="uploadBefore"
+            :file-list="fileList">
+            <el-button size="small" type="primary">点击上传</el-button>
           </el-upload>
         </el-form-item>
       </el-col>
@@ -82,7 +82,7 @@
       </el-col>
     </el-row>
     <el-form-item label="评估机型列表">
-      <div style="float: left; width: 70%">
+      <div style="float: left; width: 75%">
         <el-table :data='tableData' v-loading="loading" element-loading-text="加载数据中" style="width: 100%;" stripe border fit highlight-current-row>
           <el-table-column label="机型" align='center' width="180px">
             <template slot-scope="scope">
@@ -113,7 +113,7 @@
           </el-table-column>
         </el-table>
       </div>
-      <div style="float: right; width: 29%">
+      <div style="float: right; width: 20%">
         <el-button type="primary" plain @click="addTableRow">新增机型</el-button>
       </div>
     </el-form-item>
@@ -133,11 +133,12 @@
     </el-row>-->
     <el-col :span="24" class="toolbar" style="margin: 20px 0;">
       <el-form-item class="clearfix">
-        <el-button type="primary" @click.native="dataSubmit" :loading="loading">立即创建</el-button>
-        <el-button @click.native.prevent>取消</el-button>
+        <el-button type="primary" @click.native="dataSubmit" :loading="loading">保存</el-button>
+        <el-button @click.native="$router.back(-1)"  class="el-icon-back">返回</el-button>
       </el-form-item>
     </el-col>
   </el-form>
+
 </template>
 
 <style scope>
@@ -162,14 +163,17 @@
     created() {
       this.initConstantVal();
       this.queryData();
+      this.attachQuery();
       this.queryAdCompEval();
     },
     data() {
       return {
+        fileUploadHeight: 'height: 100px',
         actionDo: this.getAction(),
         sel: null, // 临时存放当前新增的对象
         storeList: [], // new util.HashTable(),
-        tableData: [{
+        tableData: [],
+        /* tableData: [{
           id: 2,
           acTypeId: 47,
           acType: 'BBJ',
@@ -190,14 +194,14 @@
           acMake: 'Dassault',
           userNo: '0004',
           userName: '刘超阳'
-        }],
+        }], */
         form: {
           id: 0,
           issueAuthId: '',
           adCompNum: '',
           adCompName: '',
           adCompVer: '',
-          adDateEff: '',
+          adDateEff: null,
           flag: 0,
           createById: '',
           createTime: '',
@@ -222,6 +226,7 @@
           ]
         },
         loading: false,
+        fileList: [],
         ADAdd_AuthorityList: [],
         ADAdd_ACTypeList: [],
         ADAdd_UserList: [{
@@ -240,6 +245,59 @@
       }
     },
     methods: {
+      uploadBefore(file) {
+        let fileNum = this.fileList.length + 1;
+        this.fileUploadHeight = 'height: ' + (50 + 30 * fileNum) + 'px';
+      },
+      uploadSuccess(response, file, fileList) {
+        this.fileList.push({name: file.name, url: response.data.path});
+      },
+      uploadRemove(file, fileList) {
+        let self = this;
+        if (!self.utils.isEmpty(file.id)) {
+         /* self.fileList.forEach(function (item, index) {
+            if (item.url === file.url) {
+              self.fileList.slice(index);
+            }
+          });
+        } else { */
+          let index = self.fileList.forEach(function (item, index) {
+            if (item.id === file.id) {
+              return index;
+            }
+          });
+          if (index >= 0) {
+            self.$confirm('确定删除' + file.name + '?', '提示', {}).then(() => {
+              self.loading = true;
+              $.ajax({
+                url: 'http://106.12.133.158:1881/api/static/attafile/delete',
+                type: 'POST',
+                data: '[' + +file.id + ']',
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                success: function (result) {
+                  if (result.status === 0) {
+                    self.loading = false;
+                    self.$message({
+                      message: file.name + '删除成功.',
+                      type: 'success'
+                    });
+                    self.fileList.slice(index);
+                  } else {
+                    console.log(result.status);
+                  }
+                },
+                error: function (e) {
+                  console.log(e);
+                }
+              });
+            });
+          }
+        }
+      },
+      updatePreview(file) {
+        window.open('http://106.12.133.158:1881/file/' + file.url)
+      },
       // 机型选择时设置对应的机型名称和制造商
       changeAcType: function (acTypeId, index, row) {
         let acTypeItem = this.ADAdd_ACTypeList.filter(item => item.id === acTypeId);
@@ -258,11 +316,11 @@
         var self = this;
         // 适航局选择框初始化数据
         $.ajax({
-          url: 'http://106.12.133.158:88/api/static/authority/query',
+          url: 'http://106.12.133.158:1881/api/static/authority/query',
           type: 'POST',
           data: '{' +
             "  'obj': {" +
-            "    'authName': null" +
+            "    'authNameAbbr': null" +
             '  }' +
             '}',
           contentType: 'application/json; charset=utf-8',
@@ -281,7 +339,7 @@
         });
         // 机型选择框初始化数据
         $.ajax({
-          url: 'http://106.12.133.158:88/api/static/actype/query',
+          url: 'http://106.12.133.158:1881/api/static/actype/query',
           type: 'POST',
           data: "{ 'obj': { 'acType': null } }",
           contentType: 'application/json; charset=utf-8',
@@ -299,7 +357,7 @@
         });
         // 评估工程师选择框初始化数据
         /* $.ajax({
-          url: 'http://106.12.133.158:88/api/static/actype/query',
+          url: 'http://106.12.133.158:1881/api/static/actype/query',
           type: 'POST',
           data: "{ 'obj': { 'acType': null } }",
           contentType: 'application/json; charset=utf-8',
@@ -316,26 +374,66 @@
           }
         }); */
       },
+      attachQuery: function() {
+        let adDocId = this.getAdDocId();
+        if (adDocId === -1) return;
+        let self = this;
+        $.ajax({
+          url: 'http://106.12.133.158:1881/api/static/attafile/query',
+          type: 'POST',
+          data: '{' +
+            "  'obj': {" +
+            "    'classifyId': 100001," +
+            "    'refId': '" + adDocId + "'" +
+            '  }' +
+            '}',
+          contentType: 'application/json; charset=utf-8',
+          dataType: 'json',
+          success: function (result) {
+            if (result.status === 0) {
+              result.data.forEach(function (item, i) {
+                self.fileList.push({id: item.id, name: item.fileName, url: item.filePath});
+              });
+            } else {
+              console.log(result.status);
+            }
+          },
+          error: function (e) {
+            console.log(e);
+          }
+        });
+      },
       getAdDocId() {
         let adDocId = this.$route.params.id;
         if (adDocId === null || adDocId === '' || adDocId === undefined) {
-          return -1;
+          adDocId = -1;
+          if (!this.utils.isEmpty(window.localStorage.getItem('adDocId'))) {
+            adDocId = window.localStorage.getItem('adDocId');
+          }
+          return adDocId;
+        } else {
+          window.localStorage.setItem('adDocId', adDocId);
         }
-        return adDocId;
+        return decodeURI(adDocId);
       },
       getAction() {
         let action = this.$route.params.action;
-        if (action === null || action === '' || action === undefined) {
-          return '';
+        if (this.utils.isEmpty(action)) {
+          action = -1;
+          if (!this.utils.isEmpty(window.localStorage.getItem('action'))) {
+            action = window.localStorage.getItem('action');
+          }
+        } else {
+          window.localStorage.setItem('action', action);
         }
-        return action;
+        return decodeURI(action);
       },
       queryData() {
         let adDocId = this.getAdDocId();
         if (adDocId === -1) return;
         let self = this;
         $.ajax({
-          url: 'http://106.12.133.158:88/api/pm/adcompdoc/query',
+          url: 'http://106.12.133.158:1881/api/pm/adcompdoc/query',
           type: 'POST',
           data: '{' +
             "  'obj': {" +
@@ -347,14 +445,7 @@
           dataType: 'json',
           success: function (result) {
             if (result.status === 0 && result.data.length > 0) {
-              let results = result.data.filter(item => item.id === adDocId);
-              if (results !== null && results !== undefined && results.length > 0) {
-                let row = results[0];
-                if (row.adDateEff !== null && row.adDateEff !== '') {
-                  self.$set(self.form, 'adDateEff', row.adDateEff);
-                }
-                self.form = Object.assign({}, row);
-              }
+              self.form = Object.assign({}, result.data[0]);
             } else {
               console.log(result.status);
             }
@@ -369,7 +460,7 @@
         let adDocId = this.getAdDocId();
         if (adDocId === -1) return;
         $.ajax({
-          url: 'http://106.12.133.158:88/api/pm/adcompeval/query',
+          url: 'http://106.12.133.158:1881/api/pm/adcompeval/query',
           type: 'POST',
           data: '{' +
             "  'obj': {" +
@@ -392,64 +483,89 @@
       },
       // 编辑
       dataSubmit: function () {
-        var self = this;
+        let self = this;
         self.$refs.form.validate((valid) => {
           if (valid) {
             self.$confirm('确认提交吗？', '提示', {}).then(() => {
               self.loading = true;
               // NProgress.start();
               let para = Object.assign({}, this.form);
-              debugger;
-              let postUrl = 'http://106.12.133.158:88/api/pm/adcompdoc/';
-              if (para.action !== '') {
-                postUrl += para.action;
+              let action = self.getAction();
+              let postUrl = 'http://106.12.133.158:1881/api/pm/adcompdoc/';
+              if (action !== '') {
+                postUrl += action;
               }
+              let refList = '';
               let adEvalJson = '';
               let alarmMessage = '';
-              let adEvalList = self.storeList;
-              if (adEvalList !== null && adEvalList !== undefined && adEvalList.length > 0) {
-                for (let i = 0; i < adEvalList.length; i++) {
-                  adEvalJson +=
+              if (self.utils.isNotEmpty(action) && action === 'addRef') {
+                let adEvalList = self.storeList;
+                if (adEvalList !== null && adEvalList !== undefined && adEvalList.length > 0) {
+                  for (let i = 0; i < adEvalList.length; i++) {
+                    /* adEvalJson +=
                     '{' +
                     "    'id': " + adEvalList[i].id + ',' +
                     "    'acTypeId': '" + adEvalList[i].acTypeId + "'," +
-                    "    'userNo': '" + adEvalList[i].userNo + "'," +
+                    "    'userId': '" + adEvalList[i].userNo + "'," +
                     "    'userName': '" + adEvalList[i].userName + "'," +
                     "    'ActionStatus': " + adEvalList[i].ActionStatus +
-                    '}';
+                    '}'; */
+                    adEvalJson +=
+                      '{' +
+                      "    'acTypeId': '" + adEvalList[i].acTypeId + "'," +
+                      "    'userId': '" + adEvalList[i].userNo + "'" +
+                      '},';
 
-                  if (self.utils.isEmpty(adEvalList[i].acTypeId)) {
-                    alarmMessage += '第' + (i + 1) + '行未选择机型.<br/>';
-                  }
-                  if (self.utils.isEmpty(adEvalList[i].acMake)) {
-                    alarmMessage += '第' + (i + 1) + '行制造商为空.<br/>';
-                  }
-                  if (self.utils.isEmpty(adEvalList[i].userNo)) {
-                    alarmMessage += '第' + (i + 1) + '行评估工程师为空.<br/>';
+                    if (self.utils.isEmpty(adEvalList[i].acTypeId)) {
+                      alarmMessage += '第' + (i + 1) + '行未选择机型.<br/>';
+                    }
+                    if (self.utils.isEmpty(adEvalList[i].acMake)) {
+                      alarmMessage += '第' + (i + 1) + '行制造商为空.<br/>';
+                    }
+                    if (self.utils.isEmpty(adEvalList[i].userNo)) {
+                      alarmMessage += '第' + (i + 1) + '行评估工程师为空.<br/>';
+                    }
                   }
                 }
+                if (!self.utils.isEmpty(alarmMessage)) {
+                  self.loading = false;
+                  self.$alert(alarmMessage, '评估机型数据校验不通过', {dangerouslyUseHTMLString: true});
+                  return false;
+                }
+                refList = "'refList': [" + adEvalJson + ']';
               }
-              if (self.utils.isEmpty(alarmMessage)) {
-                self.loading = false;
-                self.$alert(alarmMessage, '评估机型数据校验不通过', {dangerouslyUseHTMLString: true});
-                return false;
+              let fileName = '';
+              let fileUrl = '';
+              let classifyId = '';
+              if (self.fileList.length > 0) {
+                classifyId = '100001';
+                fileName = self.fileList[0].name;
+                fileUrl = self.fileList[0].url;
               }
+              debugger;
               $.ajax({
                 url: postUrl,
                 type: 'POST',
                 data: '{' +
-                  "    'id': '" + para.id + "'," +
-                  "    'issueAuthId': '" + para.issueAuthId + "'," +
-                  "    'adCompNum': '" + para.adCompNum + "'," +
-                  "    'adCompVer': '" + para.adCompVer + "'," +
-                  "    'adCompName': '" + para.adCompName + "'," +
-                  "    'adDateEff': '" + self.dateToString(para.melDateEff, 'yyyy-MM-dd') + "'," +
-                  "    'flag': '" + para.flag + "'," +
-                  "    'createById': '" + para.createById + "'," +
-                  "    'createTime': '" + para.createTime + "'," +
-                  "    'updateById': '" + para.updateById + "'," +
-                  "    'updateTime': '" + para.updateTime + "'," +
-                  "    'AdCompEval': [" + adEvalJson + ']' +
+                  "   'obj': {" +
+                  "       'id': '" + para.id + "'," +
+                  "       'issueAuthId': '" + para.issueAuthId + "'," +
+                  "       'adCompNum': '" + para.adCompNum + "'," +
+                  "       'adCompVer': '" + para.adCompVer + "'," +
+                  "       'adCompName': '" + para.adCompName + "'," +
+                  "       'adDateEff': '" + self.utils.dateToString(para.adDateEff, 'yyyy-MM-dd') + "'," +
+                  "       'flag': '" + para.flag + "'," +
+                  "       'createById': '" + para.createById + "'," +
+                  "       'createTime': '" + para.createTime + "'," +
+                  "       'updateById': '" + para.updateById + "'," +
+                  "       'updateTime': '" + para.updateTime + "'" +
+                  '   },' +
+                  "   'fileList': [{" +
+                  "       'classifyId': '" + classifyId + "'," +
+                  "       'fileName': '" + fileName + "'," +
+                  "       'filePath': '" + fileUrl + "'" +
+                  '   }],' +
+                      refList +
                   '}',
                 contentType: 'application/json; charset=utf-8',
                 dataType: 'json',
@@ -462,7 +578,9 @@
                       type: 'success'
                     });
                     self.queryData();
-                    self.queryAdCompEval();
+                    if (self.utils.isNotEmpty(action) && action === 'addRef') {
+                      self.queryAdCompEval();
+                    }
                   } else {
                     console.log(result.status);
                   }
@@ -475,25 +593,26 @@
           }
         });
       },
-      vilidateAdEval: function() {
+      vilidateAdEval: function(dataList, arrIndex) {
+        let self = this;
         let alarmMessage = '';
-        let adEvalList = self.storeList;
+        let adEvalList = dataList;
         if (adEvalList !== null && adEvalList !== undefined && adEvalList.length > 0) {
           for (let i = 0; i < adEvalList.length; i++) {
             if (self.utils.isEmpty(adEvalList[i].acTypeId)) {
-              alarmMessage += '第' + (i + 1) + '行未选择机型.<br/>';
+              alarmMessage += '第' + (arrIndex + i + 1) + '行未选择机型.<br/>';
             }
             if (self.utils.isEmpty(adEvalList[i].acMake)) {
-              alarmMessage += '第' + (i + 1) + '行制造商为空.<br/>';
+              alarmMessage += '第' + (arrIndex + i + 1) + '行制造商为空.<br/>';
             }
             if (self.utils.isEmpty(adEvalList[i].userNo)) {
-              alarmMessage += '第' + (i + 1) + '行评估工程师为空.<br/>';
+              alarmMessage += '第' + (arrIndex + i + 1) + '行评估工程师为空.<br/>';
             }
           }
         }
-        if (self.utils.isEmpty(alarmMessage)) {
+        if (!self.utils.isEmpty(alarmMessage)) {
           self.loading = false;
-          self.$alert(alarmMessage, '评估机型数据校验不通过', {dangerouslyUseHTMLString: true});
+          self.$alert("<font color='red'>" + alarmMessage + '</font>', '评估机型数据校验不通过', {dangerouslyUseHTMLString: true});
           return false;
         }
         return true;
@@ -501,60 +620,45 @@
       // Ad Comp Eval Controller
       handleAdCompEval: function (index, row, action) {
         let self = this;
-        self.$refs.form.validate((valid) => {
-          if (valid) {
-            self.$confirm('确认提交吗？', '提示', {}).then(() => {
-              self.loading = true;
-              let alarmMessage = '';
-              if (row === null || row === undefined) {
-                self.loading = false;
-                self.$alert('第' + index + '行评估机型数据无效，请重新编辑数据', '评估机型数据校验不通过', {dangerouslyUseHTMLString: true});
-                return false;
-              } else {
-                if (self.utils.isEmpty(row.acTypeId)) {
-                  alarmMessage += '第' + index + '行未选择机型.<br/>';
+        let adDocId = this.getAdDocId();
+        if (adDocId === -1) return;
+        self.$confirm('确认提交吗？', '提示', {}).then(() => {
+          self.loading = true;
+          if (row === null || row === undefined) {
+            self.loading = false;
+            self.$alert('第' + index + '行评估机型数据无效，请重新编辑数据', '评估机型数据校验不通过', {dangerouslyUseHTMLString: true});
+            return false;
+          } else {
+            if (!this.vilidateAdEval([row], 0)) {
+              self.loading = false;
+              return false;
+            }
+            $.ajax({
+              url: 'http://106.12.133.158:1881/api/pm/adcompeval/' + action,
+              type: 'POST',
+              data: '{' +
+                "    'id': '" + row.id + "'," +
+                "    'adDocId': '" + adDocId + "'," +
+                "    'acTypeId': '" + row.acTypeId + "'," +
+                "    'userId': '" + row.userNo + "'" +
+                '}',
+              contentType: 'application/json; charset=utf-8',
+              dataType: 'json',
+              success: function (result) {
+                if (result.status === 0) {
+                  self.loading = false;
+                  self.$message({
+                    message: '数据保存成功.',
+                    type: 'success'
+                  });
+                  self.queryAdCompEval();
+                } else {
+                  console.log(result.status);
                 }
-                if (self.utils.isEmpty(row.acMake)) {
-                  alarmMessage += '第' + index + '行制造商为空.<br/>';
-                }
-                if (self.utils.isEmpty(row.userNo)) {
-                  alarmMessage += '第' + index + '行评估工程师为空.<br/>';
-                }
+              },
+              error: function (e) {
+                console.log(e);
               }
-              if (self.utils.isEmpty(alarmMessage)) {
-                self.loading = false;
-                self.$alert(alarmMessage, '评估机型数据校验不通过', {dangerouslyUseHTMLString: true});
-                return false;
-              }
-              $.ajax({
-                url: 'http://106.12.133.158:88/api/pm/adcompeval/' + action,
-                type: 'POST',
-                data: '{' +
-                  "    'id': '" + row.id + "'," +
-                  "    'acTypeId': '" + row.acTypeId + "'," +
-                  "    'userNo': '" + row.userNo + "'," +
-                  "    'userName': '" + row.userName + "'," +
-                  "    'ActionStatus': '" + row.ActionStatus + "'" +
-                  '}',
-                contentType: 'application/json; charset=utf-8',
-                dataType: 'json',
-                success: function (result) {
-                  if (result.status === 0) {
-                    self.loading = false;
-                    // NProgress.done();
-                    self.$message({
-                      message: '数据保存成功.',
-                      type: 'success'
-                    });
-                    self.queryAdCompEval();
-                  } else {
-                    console.log(result.status);
-                  }
-                },
-                error: function (e) {
-                  console.log(e);
-                }
-              });
             });
           }
         });
@@ -565,13 +669,14 @@
         this.loading = true;
         // NProgress.start();
         $.ajax({
-          url: 'http://106.12.133.158:88/api/pm/adcompeval/delete',
+          url: 'http://106.12.133.158:1881/api/pm/adcompeval/delete',
           type: 'POST',
           data: '[' + id + ']',
           contentType: 'application/json; charset=utf-8',
           dataType: 'json',
           success: function (result) {
             if (result.status === 0) {
+              this.loading = false;
               self.$message({
                 message: '删除成功',
                 type: 'success'
@@ -594,7 +699,7 @@
           }
         }
         let item = {
-          id: this.utils.generateId(10),
+          id: this.utils.generateId(6),
           acTypeId: null,
           acType: null,
           acMake: null,
@@ -671,6 +776,9 @@
         } else {
           // storeList 过滤是否存在符合id的数据，,则判断是否
           let arrIndex = this.getIndex(row.id);
+          if (!this.vilidateAdEval([row], arrIndex === -1 ? 0 : arrIndex)) {
+            return;
+          }
           // arrIndex若为-1，表示数组中不存在ID的对象,则新增，将当前行数据存放到storeList数组中
           if (arrIndex === -1) {
             let jsonRow = JSON.parse(JSON.stringify(row));

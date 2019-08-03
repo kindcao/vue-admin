@@ -231,7 +231,7 @@
       initConstantVal: function () {
         var self = this;
         $.ajax({
-          url: 'http://106.12.133.158:88/api/static/actype/query',
+          url: 'http://106.12.133.158:1881/api/static/actype/query',
           type: 'POST',
           data: "{ 'obj': { 'acType': null } }",
           contentType: 'application/json; charset=utf-8',
@@ -248,7 +248,7 @@
           }
         });
         $.ajax({
-          url: 'http://106.12.133.158:88/api/static/prodmodel/query',
+          url: 'http://106.12.133.158:1881/api/static/prodmodel/query',
           type: 'POST',
           data: "{ 'obj': { 'cnstValProdTypeId': '22,23,24' } }",
           contentType: 'application/json; charset=utf-8',
@@ -280,7 +280,7 @@
           }
         });
         $.ajax({
-          url: 'http://106.12.133.158:88/api/static/cnstval/query',
+          url: 'http://106.12.133.158:1881/api/static/cnstval/query',
           type: 'POST',
           data: "{ 'obj': { 'parentId': '25' } }",
           contentType: 'application/json; charset=utf-8',
@@ -362,7 +362,6 @@
             return this.$message.warning('请先保存当前编辑项');
           }
         }
-        debugger;
         // storeList 过滤是否存在符合id的数据，,则判断是否
         let arrIndex = this.getIndex(row.id);
         // arrIndex若为-1，表示数组中不存在ID的对象,则新增，将当前行数据存放到storeList数组中

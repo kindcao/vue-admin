@@ -1,6 +1,7 @@
 <template>
   <div class="home">
-
+    <el-button icon="fa fa-edit">编辑</el-button>
+    <i class="fa fa-audio-description"></i>
     <p>首wwwwwwwwwwwww页</p>
     <p>首页2222222/p>
     <p>首页</p>

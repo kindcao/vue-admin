@@ -270,7 +270,7 @@
       queryData () {
         let sef = this;
         $.ajax({
-          url: 'http://106.12.133.158:88/api/static/cnstval/query',
+          url: 'http://106.12.133.158:1881/api/static/cnstval/query',
           type: 'POST',
           data: '{' +
                   "  'obj': {" +
@@ -330,7 +330,7 @@
           this.listLoading = true;
           // NProgress.start();
           $.ajax({
-            url: 'http://106.12.133.158:88/api/static/cnstval/delete',
+            url: 'http://106.12.133.158:1881/api/static/cnstval/delete',
             type: 'POST',
             data: '[' + row.id + ']',
             contentType: 'application/json; charset=utf-8',
@@ -366,7 +366,7 @@
         } else {
           self.editFormVisible = true;
           $.ajax({
-            url: 'http://106.12.133.158:88/api/static/cnstval/query',
+            url: 'http://106.12.133.158:1881/api/static/cnstval/query',
             type: 'POST',
             data: '{' +
               "  'obj': {" +
@@ -414,7 +414,7 @@
           this.addFormVisible = true;
           var self = this;
           $.ajax({
-            url: 'http://106.12.133.158:88/api/static/cnstval/query',
+            url: 'http://106.12.133.158:1881/api/static/cnstval/query',
             type: 'POST',
             data: '{' +
               "  'obj': {" +
@@ -459,7 +459,7 @@
               // NProgress.start();
               let para = Object.assign({}, this.editForm);
               $.ajax({
-                url: 'http://106.12.133.158:88/api/static/cnstval/update',
+                url: 'http://106.12.133.158:1881/api/static/cnstval/update',
                 type: 'POST',
                 data: '{' +
                   "    'id': '" + para.id + "'," +
@@ -515,7 +515,7 @@
               // NProgress.start();
               let para = Object.assign({}, this.addForm);
               $.ajax({
-                url: 'http://106.12.133.158:88/api/static/cnstval/add',
+                url: 'http://106.12.133.158:1881/api/static/cnstval/add',
                 type: 'POST',
                 data: '{' +
                   "    'id': '" + para.id + "'," +
@@ -577,7 +577,7 @@
           sef.listLoading = true;
           // NProgress.start();
           $.ajax({
-            url: 'http://106.12.133.158:88/api/static/cnstval/delete',
+            url: 'http://106.12.133.158:1881/api/static/cnstval/delete',
             type: 'POST',
             data: '[' + ids + ']',
             contentType: 'application/json; charset=utf-8',
