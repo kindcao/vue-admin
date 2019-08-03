@@ -15,7 +15,7 @@ if (!store.state.token_access) {
 // axios 配置
 
 const http = axios.create({
-  baseURL: 'http://127.0.0.1:8080/api',
+  baseURL: 'http://106.12.133.158:1881/api',
   timeout: 5000,
   headers: {
     'Content-Type': 'application/json;charset=UTF-8'
