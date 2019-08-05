@@ -185,6 +185,7 @@
                 sef.addLoading = false;
                 sef.$refs['addForm'].resetFields();
                 sef.addFormVisible = false;
+                sef.queryData();
               }).catch((e) => {
                 sef.addLoading = false;
                 this.addForm.userName = '';
