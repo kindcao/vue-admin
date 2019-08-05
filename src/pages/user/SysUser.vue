@@ -16,6 +16,43 @@
         </el-col>
       </el-row>
     </el-form>
+    <el-table
+      v-loading="loading"
+      element-loading-text="加载数据中"
+      :data='tableData'
+      @selection-change="handleSelectionChange"
+      border
+      :row-class-name="addRowClass">
+      <el-table-column
+        type="selection"
+        width="55">
+      </el-table-column>
+      <el-table-column label="编号" prop="id" align="center" min-width="30"></el-table-column>
+      <el-table-column label="用户名" prop="userName"></el-table-column>
+      <el-table-column label="密码" prop="passwd"></el-table-column>
+      <el-table-column label="用户全称" prop="fullName"></el-table-column>
+      <el-table-column label="邮件地址" prop="email"></el-table-column>
+      <el-table-column label="操作" align="center" min-width="50">
+        <template scope="scope">
+          <i class="el-icon-edit" @click="handleEdit(scope.$index, scope.row)"><span>编辑</span></i>
+          <i style="width:20px;">&nbsp;</i>
+          <i class="el-icon-delete" @click="handleDel(scope.$index, scope.row)"><span>删除</span></i>
+        </template>
+      </el-table-column>
+    </el-table>
+    <!--工具条-->
+    <el-col :span="24" class="toolbar" style="margin-top: 16px; ">
+      <el-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">批量删除</el-button>
+      <el-pagination
+        style="text-align:right;float:right;"
+        layout="total, sizes, prev, pager, next, jumper"
+        :page-sizes="[15, 30, 50, 100]"
+        :page-size="pagesize"
+        :total="total"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange">
+      </el-pagination>
+    </el-col>
     <!--新增界面-->
     <el-dialog title="新增" :visible.sync="addFormVisible" :close-on-click-modal="false" :append-to-body="true">
       <el-form :model="addForm" label-width="120px" :rules="addFormRules" ref="addForm">
@@ -43,16 +80,23 @@
   @import '../../resources/form-controls.css';
 </style>
 <script>
+  const POSITIVE = 0;
+  const NEGATIVE = 1;
   export default {
     created() {
-
+      this.queryData();
     },
     data() {
       return {
         tableData: [],
         filters: {
-          'userName': ''
+          userName: ''
         },
+        loading: false,
+        pagesize: 15,
+        currentpage: 1,
+        total: 0,
+        sels: [], // 列表选中列
         addFormVisible: false, // 新增界面是否显示
         addLoading: false,
         addFormRules: {
@@ -84,6 +128,33 @@
     // 显示新增界面
     methods: {
       queryData() {
+        let sef = this;
+        this.axios.post('/sys/sysuser/query', {
+          obj: {
+            userName: sef.filters.userName
+          },
+          page: {
+            pageNum: sef.currentpage,
+            pageSize: sef.pagesize
+          }
+        }).then((res) => {
+          sef.tableData = res.data.list;
+          sef.total = res.data.total;
+          sef.loading = false;
+        });
+      },
+      handleSizeChange(value) {
+        this.pagesize = value;
+        this.queryData();
+      },
+      handleCurrentChange(value) {
+        this.currentpage = value;
+        this.queryData();
+      },
+      addRowClass({row, rowIndex}) {
+        if (row.rateType === NEGATIVE) {
+          return 'warning-row';
+        }
       },
       reset() {
         this.$refs['filters'].resetFields();
@@ -111,26 +182,22 @@
                 'userName': para.userName,
                 'fullName': para.fullName
               }).then((res) => {
-                if (res.data.status === 0) {
-                  sef.addLoading = false;
-                  // NProgress.done();
-                  sef.$message({
-                    message: '提交成功',
-                    type: 'success'
-                  });
-                  sef.$refs['addForm'].resetFields();
-                  sef.addFormVisible = false;
-                } else {
-                  this.$message({
-                    type: 'error',
-                    message: res.data.data,
-                    center: true
-                  });
-                }
-              });
+                sef.addLoading = false;
+                sef.$refs['addForm'].resetFields();
+                sef.addFormVisible = false;
+              }).catch((e) => {
+                sef.addLoading = false;
+                this.addForm.userName = '';
+              })
             })
           }
         })
+      },
+      handleSelectionChange: function (sels) {
+        this.sels = sels;
+      },
+      // 批量删除
+      batchRemove: function () {
       }
     }
   }

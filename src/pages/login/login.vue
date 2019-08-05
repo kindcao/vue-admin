@@ -108,22 +108,14 @@
               'passwd': this.form.password,
               'userName': this.form.username
             }).then((res) => {
-              if (res.data.status === 0) {
-                let accessToken = res.headers.token_access;
-                let refreshToken = res.headers.token_refresh;
-                this.$store.commit('SET_TOKEN_ACCESS', accessToken);
-                this.$store.commit('SET_TOKEN_REFRESH', refreshToken);
-                //
-                let User = res.data.data;
-                this.$store.commit('SET_USER', User);
-                this.$router.replace('home');
-              } else {
-                this.$message({
-                  type: 'error',
-                  message: res.data.data,
-                  center: true
-                });
-              }
+              let accessToken = res.headers.token_access;
+              let refreshToken = res.headers.token_refresh;
+              this.$store.commit('SET_TOKEN_ACCESS', accessToken);
+              this.$store.commit('SET_TOKEN_REFRESH', refreshToken);
+              //
+              let User = res.data.data;
+              this.$store.commit('SET_USER', User);
+              this.$router.replace('home');
             });
           }
         })

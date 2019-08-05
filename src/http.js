@@ -49,7 +49,6 @@ http.interceptors.request.use(config => {
       console.log(config.data);
     }
   }
-
   return config;
 }, error => {
   loadingInstance.close();
@@ -64,7 +63,33 @@ http.interceptors.response.use(res => {
   loadingInstance.close();
   console.log('response <--');
   console.log(res);
-  return res;
+  //
+  let status = res.data.status;
+  if (status === 0) {
+    if (res.config.url.endsWith('/sys/sysuser/login')) {
+      return res;
+    } else {
+      Message.success({
+        message: '操作成功'
+      });
+      return res.data;
+    }
+  } else if (status === -101) {
+    Message.warning({
+      message: res.data.data
+    });
+    router.replace({
+      path: '/login',
+      query: {
+        redirect: router.currentRoute.fullPath
+      }
+    });
+  } else {
+    Message.error({
+      message: res.data.data
+    });
+    return Promise.reject(res);
+  }
 }, error => {
   loadingInstance.close();
   if (error && error.response) {
