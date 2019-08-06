@@ -2,8 +2,8 @@
   <section>
     <el-form ref="filters" :model="filters" label-width="120px">
       <el-row>
-        <el-col :span="5">
-          <el-form-item label="用户名" prop="acType">
+        <el-col :span="6">
+          <el-form-item label="用户名" prop="userName">
             <el-input v-model="filters.userName"></el-input>
           </el-form-item>
         </el-col>
@@ -53,6 +53,30 @@
         @current-change="handleCurrentChange">
       </el-pagination>
     </el-col>
+    <!--编辑界面-->
+    <el-dialog title="编辑" :visible.sync="editFormVisible" :close-on-click-modal="false" :append-to-body="true">
+      <el-form :model="editForm" label-width="120px" :rules="editFormRules" ref="editForm">
+        <el-form-item label="主键" prop="id" hidden>
+          <el-input v-model="editForm.id"></el-input>
+        </el-form-item>
+        <el-form-item label="用户名" prop="userName">
+          <el-input v-model="editForm.userName" :readonly="true"></el-input>
+        </el-form-item>
+        <el-form-item label="密码" prop="passwd">
+          <el-input v-model="editForm.passwd"></el-input>
+        </el-form-item>
+        <el-form-item label="用户全称" prop="fullName">
+          <el-input v-model="editForm.fullName"></el-input>
+        </el-form-item>
+        <el-form-item label="邮件地址" prop="email">
+          <el-input v-model="editForm.email"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click.native="editFormVisible = false">取消</el-button>
+        <el-button type="primary" @click.native="editSubmit" :loading="editLoading">提交</el-button>
+      </div>
+    </el-dialog>
     <!--新增界面-->
     <el-dialog title="新增" :visible.sync="addFormVisible" :close-on-click-modal="false" :append-to-body="true">
       <el-form :model="addForm" label-width="120px" :rules="addFormRules" ref="addForm">
@@ -79,9 +103,11 @@
 <style scoped>
   @import '../../resources/form-controls.css';
 </style>
+
 <script>
   const POSITIVE = 0;
   const NEGATIVE = 1;
+
   export default {
     created() {
       this.queryData();
@@ -116,6 +142,33 @@
             {type: 'email', required: false, message: '请输入邮件地址', trigger: 'blur'}
           ]
         },
+        editFormVisible: false,  // 编辑界面是否显示
+        editLoading: false,
+        editFormRules: {
+          userName: [
+            {required: true, message: '请输入用户名', trigger: 'blur'},
+            {min: 4, max: 32, message: '长度在4 到 32 个字符', trigger: 'blur'}
+          ],
+          passwd: [
+            {required: true, message: '请输入密码', trigger: 'blur'},
+            {min: 4, max: 32, message: '长度在 4 到 32 个字符', trigger: 'blur'}
+          ],
+          fullName: [
+            {required: true, message: '请输入用户全称', trigger: 'blur'},
+            {min: 1, max: 32, message: '长度在 1 到 32 个字符', trigger: 'blur'}
+          ],
+          email: [
+            {type: 'email', required: false, message: '请输入邮件地址', trigger: 'blur'}
+          ]
+        },
+        // 编辑界面数据
+        editForm: {
+          id: 0,
+          email: '',
+          fullName: '',
+          passwd: '',
+          userName: ''
+        },
         // 新增界面数据
         addForm: {
           email: '',
@@ -141,7 +194,8 @@
           sef.tableData = res.data.list;
           sef.total = res.data.total;
           sef.loading = false;
-        });
+        }).catch((e) => {
+        })
       },
       handleSizeChange(value) {
         this.pagesize = value;
@@ -194,14 +248,75 @@
           }
         })
       },
+      // 编辑
+      editSubmit: function () {
+        var sef = this;
+        sef.$refs.editForm.validate((valid) => {
+          if (valid) {
+            sef.$confirm('确认提交吗？', '提示', {}).then(() => {
+              sef.editLoading = true;
+              // NProgress.start();
+              let para = Object.assign({}, this.editForm);
+              this.axios.post('/sys/sysuser/update', {
+                'id': para.id,
+                'email': para.email,
+                'passwd': para.passwd,
+                'userName': para.userName,
+                'fullName': para.fullName
+              }).then((res) => {
+                sef.editLoading = false;
+                sef.$refs['editForm'].resetFields();
+                sef.editFormVisible = false;
+                sef.queryData();
+              }).catch((e) => {
+              });
+            })
+          }
+        })
+      },
+      // 删除
+      handleDel: function (index, row) {
+        var sef = this;
+        this.$confirm('确认删除该记录吗?', '提示', {
+          type: 'warning'
+        }).then(() => {
+          this.listLoading = true;
+          this.axios.post('/sys/sysuser/delete', [
+            row.id
+          ]).then((res) => {
+            sef.queryData();
+          });
+        })
+      },
+      // 显示编辑界面
+      handleEdit: function (index, row) {
+        this.editFormVisible = true;
+        this.editForm = Object.assign({}, row);
+      },
       handleSelectionChange: function (sels) {
         this.sels = sels;
       },
       // 批量删除
       batchRemove: function () {
+        var sef = this;
+        if (sef.sels == null) {
+          return;
+        }
+        var ids = sef.sels.map(item => item.id);
+        console.log(ids);
+        sef.$confirm('确认删除选中记录吗？', '提示', {
+          type: 'warning'
+        }).then(() => {
+          sef.listLoading = true;
+          this.axios.post('/sys/sysuser/delete', ids
+          ).then((res) => {
+            sef.queryData();
+          }).catch(() => {
+          });
+        });
       }
     }
-  }
+  };
 </script>
 
 
