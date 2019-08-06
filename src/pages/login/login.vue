@@ -24,7 +24,7 @@
           <el-form-item prop="yanzhengma">
             <div class="check-code-wrapper">
               <div class="yanzhengma-wrapper">
-                <el-input v-model="form.yanzhengma" @keyup.enter.native="login('loginForm')" placeholder="请输入验证码">
+                <el-input v-model="form.yanzhengma" @keyup.enter.native="loginHandle('loginForm')" placeholder="请输入验证码">
                   <i slot="prefix" class="el-input__icon el-icon-adm-vertification" style="font-size: 18px;"></i>
                 </el-input>
               </div>
