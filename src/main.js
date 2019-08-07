@@ -11,7 +11,6 @@ import 'font-awesome/css/font-awesome.min.css';
 import utils from './utils/utils.js';
 /* import { JSEncrypt } from 'jsencrypt/bin/jsencrypt' */
 
-
 // 公共样式表
 import 'normalize.css';
 import 'animate.css';
@@ -23,7 +22,7 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 
 // 引入echarts主模块（基础模块）
-import ECharts from 'vue-echarts/components/ECharts.vue'
+import ECharts from 'vue-echarts/components/ECharts.vue';
 
 // 引入需要的echarts如表
 import 'echarts/lib/chart/bar';
@@ -41,6 +40,7 @@ import 'src/assets/styles/variable.scss';
 import 'src/assets/styles/base.scss';
 import 'src/assets/styles/common.scss';
 import 'src/assets/styles/iconfont.css';
+
 Vue.prototype.utils = utils;
 
 /* Vue.prototype.Encrypt = function (data) {
@@ -67,18 +67,20 @@ Vue.config.productionTip = false;
 // 将axios挂载到prototype上，在组件中可以直接使用this.axios访问
 Vue.prototype.axios = http;
 
-Vue.directive('numberInt', { bind: function(el, binding, vnode) {
-  let element = el.getElementsByTagName('input')[0];
-  let len = binding.arg;  // 初始化设置
-  element.value = Number(element.value).toFixed(len);  // 失焦时候格式化
-  element.addEventListener('blur', function() {
-    if (isNaN(element.value)) {
-      vnode.data.model.callback(0);
-    } else {
-      vnode.data.model.callback(Number(element.value).toFixed(len));
-    }
-  });
-}});
+Vue.directive('numberInt', {
+  bind: function(el, binding, vnode) {
+    let element = el.getElementsByTagName('input')[0];
+    let len = binding.arg; // 初始化设置
+    element.value = Number(element.value).toFixed(len); // 失焦时候格式化
+    element.addEventListener('blur', function() {
+      if (isNaN(element.value)) {
+        vnode.data.model.callback(0);
+      } else {
+        vnode.data.model.callback(Number(element.value).toFixed(len));
+      }
+    });
+  }
+});
 
 new Vue({
   el: '#app',
@@ -87,4 +89,3 @@ new Vue({
   template: '<Root/>',
   components: { Root }
 });
-

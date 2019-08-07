@@ -100,7 +100,7 @@
     </el-dialog>
   </section>
 </template>
-<style scoped>
+<style scoped >
   @import '../../resources/form-controls.css';
 </style>
 
@@ -127,38 +127,38 @@
         addLoading: false,
         addFormRules: {
           userName: [
-            {required: true, message: '请输入用户名', trigger: 'blur'},
-            {min: 4, max: 32, message: '长度在4 到 32 个字符', trigger: 'blur'}
+            { required: true, message: '请输入用户名', trigger: 'blur' },
+            { min: 4, max: 32, message: '长度在4 到 32 个字符', trigger: 'blur' }
           ],
           passwd: [
-            {required: true, message: '请输入密码', trigger: 'blur'},
-            {min: 4, max: 32, message: '长度在 4 到 32 个字符', trigger: 'blur'}
+            { required: true, message: '请输入密码', trigger: 'blur' },
+            { min: 4, max: 32, message: '长度在 4 到 32 个字符', trigger: 'blur' }
           ],
           fullName: [
-            {required: true, message: '请输入用户全称', trigger: 'blur'},
-            {min: 1, max: 32, message: '长度在 1 到 32 个字符', trigger: 'blur'}
+            { required: true, message: '请输入用户全称', trigger: 'blur' },
+            { min: 1, max: 32, message: '长度在 1 到 32 个字符', trigger: 'blur' }
           ],
           email: [
-            {type: 'email', required: false, message: '请输入邮件地址', trigger: 'blur'}
+            { type: 'email', required: false, message: '请输入邮件地址', trigger: 'blur' }
           ]
         },
         editFormVisible: false,  // 编辑界面是否显示
         editLoading: false,
         editFormRules: {
           userName: [
-            {required: true, message: '请输入用户名', trigger: 'blur'},
-            {min: 4, max: 32, message: '长度在4 到 32 个字符', trigger: 'blur'}
+            { required: true, message: '请输入用户名', trigger: 'blur' },
+            { min: 4, max: 32, message: '长度在4 到 32 个字符', trigger: 'blur' }
           ],
           passwd: [
-            {required: true, message: '请输入密码', trigger: 'blur'},
-            {min: 4, max: 32, message: '长度在 4 到 32 个字符', trigger: 'blur'}
+            { required: true, message: '请输入密码', trigger: 'blur' },
+            { min: 4, max: 32, message: '长度在 4 到 32 个字符', trigger: 'blur' }
           ],
           fullName: [
-            {required: true, message: '请输入用户全称', trigger: 'blur'},
-            {min: 1, max: 32, message: '长度在 1 到 32 个字符', trigger: 'blur'}
+            { required: true, message: '请输入用户全称', trigger: 'blur' },
+            { min: 1, max: 32, message: '长度在 1 到 32 个字符', trigger: 'blur' }
           ],
           email: [
-            {type: 'email', required: false, message: '请输入邮件地址', trigger: 'blur'}
+            { type: 'email', required: false, message: '请输入邮件地址', trigger: 'blur' }
           ]
         },
         // 编辑界面数据
@@ -176,7 +176,7 @@
           passwd: '',
           userName: ''
         }
-      }
+      };
     },
     // 显示新增界面
     methods: {
@@ -195,7 +195,7 @@
           sef.total = res.data.total;
           sef.loading = false;
         }).catch((e) => {
-        })
+        });
       },
       handleSizeChange(value) {
         this.pagesize = value;
@@ -205,7 +205,7 @@
         this.currentpage = value;
         this.queryData();
       },
-      addRowClass({row, rowIndex}) {
+      addRowClass({ row, rowIndex }) {
         if (row.rateType === NEGATIVE) {
           return 'warning-row';
         }
@@ -213,16 +213,16 @@
       reset() {
         this.$refs['filters'].resetFields();
       },
-      handleAdd: function () {
+      handleAdd: function() {
         this.addFormVisible = true;
         this.addForm = {
           email: '',
           fullName: '',
           passwd: '',
           userName: ''
-        }
+        };
       },
-      addSubmit: function () {
+      addSubmit: function() {
         var sef = this;
         sef.$refs.addForm.validate((valid) => {
           if (valid) {
@@ -243,13 +243,13 @@
               }).catch((e) => {
                 sef.addLoading = false;
                 this.addForm.userName = '';
-              })
-            })
+              });
+            });
           }
-        })
+        });
       },
       // 编辑
-      editSubmit: function () {
+      editSubmit: function() {
         var sef = this;
         sef.$refs.editForm.validate((valid) => {
           if (valid) {
@@ -270,12 +270,12 @@
                 sef.queryData();
               }).catch((e) => {
               });
-            })
+            });
           }
-        })
+        });
       },
       // 删除
-      handleDel: function (index, row) {
+      handleDel: function(index, row) {
         var sef = this;
         this.$confirm('确认删除该记录吗?', '提示', {
           type: 'warning'
@@ -286,18 +286,18 @@
           ]).then((res) => {
             sef.queryData();
           });
-        })
+        });
       },
       // 显示编辑界面
-      handleEdit: function (index, row) {
+      handleEdit: function(index, row) {
         this.editFormVisible = true;
         this.editForm = Object.assign({}, row);
       },
-      handleSelectionChange: function (sels) {
+      handleSelectionChange: function(sels) {
         this.sels = sels;
       },
       // 批量删除
-      batchRemove: function () {
+      batchRemove: function() {
         var sef = this;
         if (sef.sels == null) {
           return;
