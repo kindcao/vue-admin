@@ -100,101 +100,100 @@
   </section>
 </template>
 <style scoped>
-  @import '../../resources/form-controls.css';
+@import '../../resources/form-controls.css';
 </style>
 
 <script>
-  const POSITIVE = 0;
-  const NEGATIVE = 1;
+const POSITIVE = 0;
+const NEGATIVE = 1;
 
-  export default {
-    created() {
-      this.queryData();
-    },
-    data() {
-      let checkUserName = (rule, value, callback) => {
-        this.axios
-          .post('/sys/sysuser/exist', {
-            userName: value
-          })
-          .then(res => {
-            if (res.data) {
-              callback(new Error('用户名已经存在'));
-            } else {
-              callback();
-            }
-          })
-          .catch(() => {
-          });
-      };
-      return {
-        tableData: [],
-        filters: {
-          userName: ''
-        },
-        loading: false,
-        pagesize: 15,
-        currentpage: 1,
-        total: 0,
-        sels: [], // 列表选中列
-        addFormVisible: false, // 新增界面是否显示
-        addLoading: false,
-        addFormRules: {
-          userName: [
-            { required: true, message: '请输入用户名', trigger: 'blur' },
-            { min: 4, max: 32, message: '长度在4 到 32 个字符', trigger: 'blur' },
-            { validator: checkUserName, trigger: 'blur' }
-          ],
-          passwd: [
-            { required: true, message: '请输入密码', trigger: 'blur' },
-            { min: 4, max: 32, message: '长度在 4 到 32 个字符', trigger: 'blur' }
-          ],
-          fullName: [
-            { required: true, message: '请输入用户全称', trigger: 'blur' },
-            { min: 1, max: 32, message: '长度在 1 到 32 个字符', trigger: 'blur' }
-          ],
-          email: [{ type: 'email', required: false, message: '请输入邮件地址', trigger: 'blur' }]
-        },
-        editFormVisible: false, // 编辑界面是否显示
-        editLoading: false,
-        editFormRules: {
-          userName: [
-            { required: true, message: '请输入用户名', trigger: 'blur' },
-            { min: 4, max: 32, message: '长度在4 到 32 个字符', trigger: 'blur' }
-          ],
-          passwd: [
-            { required: true, message: '请输入密码', trigger: 'blur' },
-            { min: 4, max: 32, message: '长度在 4 到 32 个字符', trigger: 'blur' }
-          ],
-          fullName: [
-            { required: true, message: '请输入用户全称', trigger: 'blur' },
-            { min: 1, max: 32, message: '长度在 1 到 32 个字符', trigger: 'blur' }
-          ],
-          email: [{ type: 'email', required: false, message: '请输入邮件地址', trigger: 'blur' }]
-        },
-        // 编辑界面数据
-        editForm: {
-          id: 0,
-          email: '',
-          fullName: '',
-          passwd: '',
-          userName: ''
-        },
-        // 新增界面数据
-        addForm: {
-          email: '',
-          fullName: '',
-          passwd: '',
-          userName: ''
-        }
-      };
-    },
-    // 显示新增界面
-    methods: {
-      queryData() {
-        let sef = this;
-        this.axios
-          .post('/sys/sysuser/query', {
+export default {
+  created() {
+    this.queryData();
+  },
+  data() {
+    let checkUserName = (rule, value, callback) => {
+      this.axios
+        .post('/sys/sysuser/exist', {
+          userName: value
+        })
+        .then(res => {
+          if (res.data) {
+            callback(new Error('用户名已经存在'));
+          } else {
+            callback();
+          }
+        })
+        .catch(() => {});
+    };
+    return {
+      tableData: [],
+      filters: {
+        userName: ''
+      },
+      loading: false,
+      pagesize: 15,
+      currentpage: 1,
+      total: 0,
+      sels: [], // 列表选中列
+      addFormVisible: false, // 新增界面是否显示
+      addLoading: false,
+      addFormRules: {
+        userName: [
+          { required: true, message: '请输入用户名', trigger: 'blur' },
+          { min: 4, max: 32, message: '长度在4 到 32 个字符', trigger: 'blur' },
+          { validator: checkUserName, trigger: 'blur' }
+        ],
+        passwd: [
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { min: 4, max: 32, message: '长度在 4 到 32 个字符', trigger: 'blur' }
+        ],
+        fullName: [
+          { required: true, message: '请输入用户全称', trigger: 'blur' },
+          { min: 1, max: 32, message: '长度在 1 到 32 个字符', trigger: 'blur' }
+        ],
+        email: [{ type: 'email', required: false, message: '请输入邮件地址', trigger: 'blur' }]
+      },
+      editFormVisible: false, // 编辑界面是否显示
+      editLoading: false,
+      editFormRules: {
+        userName: [
+          { required: true, message: '请输入用户名', trigger: 'blur' },
+          { min: 4, max: 32, message: '长度在4 到 32 个字符', trigger: 'blur' }
+        ],
+        passwd: [
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { min: 4, max: 32, message: '长度在 4 到 32 个字符', trigger: 'blur' }
+        ],
+        fullName: [
+          { required: true, message: '请输入用户全称', trigger: 'blur' },
+          { min: 1, max: 32, message: '长度在 1 到 32 个字符', trigger: 'blur' }
+        ],
+        email: [{ type: 'email', required: false, message: '请输入邮件地址', trigger: 'blur' }]
+      },
+      // 编辑界面数据
+      editForm: {
+        id: 0,
+        email: '',
+        fullName: '',
+        passwd: '',
+        userName: ''
+      },
+      // 新增界面数据
+      addForm: {
+        email: '',
+        fullName: '',
+        passwd: '',
+        userName: ''
+      }
+    };
+  },
+  // 显示新增界面
+  methods: {
+    queryData() {
+      let sef = this;
+      this.axios
+        .post('/sys/sysuser/query', {
           obj: {
             userName: sef.filters.userName
           },
@@ -202,141 +201,138 @@
             pageNum: sef.currentpage,
             pageSize: sef.pagesize
           }
-          })
-          .then(res => {
+        })
+        .then(res => {
           sef.tableData = res.data.list;
           sef.total = res.data.total;
           sef.loading = false;
-          })
-          .catch(() => {
-          });
-      },
-      handleSizeChange(value) {
-        this.pagesize = value;
-        this.queryData();
-      },
-      handleCurrentChange(value) {
-        this.currentpage = value;
-        this.queryData();
-      },
-      addRowClass({ row, rowIndex }) {
-        if (row.rateType === NEGATIVE) {
-          return 'warning-row';
-        }
-      },
-      reset() {
-        this.$refs['filters'].resetFields();
-      },
-      handleAdd: function() {
-        this.addFormVisible = true;
-        this.addForm = {
-          email: '',
-          fullName: '',
-          passwd: '',
-          userName: ''
-        };
-      },
-      addSubmit: function() {
-        let sef = this;
-        sef.$refs.addForm.validate(valid => {
-          if (valid) {
-            sef.$confirm('确认提交吗？', '提示', {}).then(() => {
-              sef.addLoading = true;
-              // NProgress.start();
-              let para = Object.assign({}, this.addForm);
-              this.axios
-                .post('/sys/sysuser/add', {
-                  email: para.email,
-                  passwd: para.passwd,
-                  userName: para.userName,
-                  fullName: para.fullName
-                })
-                .then(res => {
+        })
+        .catch(() => {});
+    },
+    handleSizeChange(value) {
+      this.pagesize = value;
+      this.queryData();
+    },
+    handleCurrentChange(value) {
+      this.currentpage = value;
+      this.queryData();
+    },
+    addRowClass({ row, rowIndex }) {
+      if (row.rateType === NEGATIVE) {
+        return 'warning-row';
+      }
+    },
+    reset() {
+      this.$refs['filters'].resetFields();
+    },
+    handleAdd: function() {
+      this.addFormVisible = true;
+      this.addForm = {
+        email: '',
+        fullName: '',
+        passwd: '',
+        userName: ''
+      };
+    },
+    addSubmit: function() {
+      let sef = this;
+      sef.$refs.addForm.validate(valid => {
+        if (valid) {
+          sef.$confirm('确认提交吗？', '提示', {}).then(() => {
+            sef.addLoading = true;
+            // NProgress.start();
+            let para = Object.assign({}, this.addForm);
+            this.axios
+              .post('/sys/sysuser/add', {
+                email: para.email,
+                passwd: para.passwd,
+                userName: para.userName,
+                fullName: para.fullName
+              })
+              .then(res => {
                 sef.addLoading = false;
                 sef.$refs['addForm'].resetFields();
                 sef.addFormVisible = false;
                 sef.queryData();
-                })
-                .catch(() => {
+              })
+              .catch(() => {
                 sef.addLoading = false;
                 this.addForm.userName = '';
               });
-            });
-          }
-        });
-      },
-      // 编辑
-      editSubmit: function() {
-        let sef = this;
-        sef.$refs.editForm.validate(valid => {
-          if (valid) {
-            sef.$confirm('确认提交吗？', '提示', {}).then(() => {
-              sef.editLoading = true;
-              // NProgress.start();
-              let para = Object.assign({}, this.editForm);
-              this.axios
-                .post('/sys/sysuser/update', {
-                  id: para.id,
-                  email: para.email,
-                  passwd: para.passwd,
-                  userName: para.userName,
-                  fullName: para.fullName
-                })
-                .then(res => {
+          });
+        }
+      });
+    },
+    // 编辑
+    editSubmit: function() {
+      let sef = this;
+      sef.$refs.editForm.validate(valid => {
+        if (valid) {
+          sef.$confirm('确认提交吗？', '提示', {}).then(() => {
+            sef.editLoading = true;
+            // NProgress.start();
+            let para = Object.assign({}, this.editForm);
+            this.axios
+              .post('/sys/sysuser/update', {
+                id: para.id,
+                email: para.email,
+                passwd: para.passwd,
+                userName: para.userName,
+                fullName: para.fullName
+              })
+              .then(res => {
                 sef.editLoading = false;
                 sef.$refs['editForm'].resetFields();
                 sef.editFormVisible = false;
                 sef.queryData();
-                })
-                .catch(() => {
-                });
-            });
-          }
-        });
-      },
-      // 删除
-      handleDel: function(index, row) {
-        let sef = this;
-        this.$confirm('确认删除该记录吗?', '提示', {
-          type: 'warning'
-        }).then(() => {
-          this.listLoading = true;
-          this.axios.post('/sys/sysuser/delete', [row.id]).then(res => {
-            sef.queryData();
-          });
-        });
-      },
-      // 显示编辑界面
-      handleEdit: function(index, row) {
-        this.editFormVisible = true;
-        this.editForm = Object.assign({}, row);
-      },
-      handleSelectionChange: function(sels) {
-        this.sels = sels;
-      },
-      // 批量删除
-      batchRemove: function() {
-        let sef = this;
-        if (sef.sels == null) {
-          return;
-        }
-        var ids = sef.sels.map(item => item.id);
-        console.log(ids);
-        sef
-          .$confirm('确认删除选中记录吗？', '提示', {
-          type: 'warning'
-          })
-          .then(() => {
-          sef.listLoading = true;
-            this.axios
-              .post('/sys/sysuser/delete', ids)
-              .then(res => {
-                sef.queryData();
               })
-              .catch(() => {
-              });
+              .catch(() => {});
+          });
+        }
+      });
+    },
+    // 删除
+    handleDel: function(index, row) {
+      let sef = this;
+      this.$confirm('确认删除该记录吗?', '提示', {
+        type: 'warning'
+      }).then(() => {
+        this.listLoading = true;
+        this.axios.post('/sys/sysuser/delete', [row.id]).then(res => {
+          sef.queryData();
         });
+      });
+    },
+    // 显示编辑界面
+    handleEdit: function(index, row) {
+      this.editFormVisible = true;
+      this.editForm = Object.assign({}, row);
+    },
+    handleSelectionChange: function(sels) {
+      this.sels = sels;
+    },
+    // 批量删除
+    batchRemove: function() {
+      let sef = this;
+      if (sef.sels == null) {
+        return;
       }
+      var ids = sef.sels.map(item => item.id);
+      console.log(ids);
+      sef
+        .$confirm('确认删除选中记录吗？', '提示', {
+          type: 'warning'
+        })
+        .then(() => {
+          sef.listLoading = true;
+          this.axios
+            .post('/sys/sysuser/delete', ids)
+            .then(res => {
+              sef.queryData();
+            })
+            .catch(() => {});
+        });
     }
-  };
+  }
+};
 </script>
