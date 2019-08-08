@@ -19,14 +19,12 @@
     <el-table
       v-loading="loading"
       element-loading-text="加载数据中"
-      :data='tableData'
+      :data="tableData"
       @selection-change="handleSelectionChange"
       border
-      :row-class-name="addRowClass">
-      <el-table-column
-        type="selection"
-        width="55">
-      </el-table-column>
+      :row-class-name="addRowClass"
+    >
+      <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column label="编号" prop="id" align="center" min-width="30"></el-table-column>
       <el-table-column label="用户名" prop="userName"></el-table-column>
       <el-table-column label="密码" prop="passwd"></el-table-column>
@@ -42,7 +40,7 @@
     </el-table>
     <!--工具条-->
     <el-col :span="24" class="toolbar" style="margin-top: 16px; ">
-      <el-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">批量删除</el-button>
+      <el-button type="danger" @click="batchRemove" :disabled="this.sels.length === 0">批量删除</el-button>
       <el-pagination
         style="text-align:right;float:right;"
         layout="total, sizes, prev, pager, next, jumper"
@@ -50,7 +48,8 @@
         :page-size="pagesize"
         :total="total"
         @size-change="handleSizeChange"
-        @current-change="handleCurrentChange">
+        @current-change="handleCurrentChange"
+      >
       </el-pagination>
     </el-col>
     <!--编辑界面-->
@@ -100,7 +99,7 @@
     </el-dialog>
   </section>
 </template>
-<style scoped >
+<style scoped>
   @import '../../resources/form-controls.css';
 </style>
 
@@ -113,6 +112,21 @@
       this.queryData();
     },
     data() {
+      let checkUserName = (rule, value, callback) => {
+        this.axios
+          .post('/sys/sysuser/exist', {
+            userName: value
+          })
+          .then(res => {
+            if (res.data) {
+              callback(new Error('用户名已经存在'));
+            } else {
+              callback();
+            }
+          })
+          .catch(() => {
+          });
+      };
       return {
         tableData: [],
         filters: {
@@ -128,7 +142,8 @@
         addFormRules: {
           userName: [
             { required: true, message: '请输入用户名', trigger: 'blur' },
-            { min: 4, max: 32, message: '长度在4 到 32 个字符', trigger: 'blur' }
+            { min: 4, max: 32, message: '长度在4 到 32 个字符', trigger: 'blur' },
+            { validator: checkUserName, trigger: 'blur' }
           ],
           passwd: [
             { required: true, message: '请输入密码', trigger: 'blur' },
@@ -138,11 +153,9 @@
             { required: true, message: '请输入用户全称', trigger: 'blur' },
             { min: 1, max: 32, message: '长度在 1 到 32 个字符', trigger: 'blur' }
           ],
-          email: [
-            { type: 'email', required: false, message: '请输入邮件地址', trigger: 'blur' }
-          ]
+          email: [{ type: 'email', required: false, message: '请输入邮件地址', trigger: 'blur' }]
         },
-        editFormVisible: false,  // 编辑界面是否显示
+        editFormVisible: false, // 编辑界面是否显示
         editLoading: false,
         editFormRules: {
           userName: [
@@ -157,9 +170,7 @@
             { required: true, message: '请输入用户全称', trigger: 'blur' },
             { min: 1, max: 32, message: '长度在 1 到 32 个字符', trigger: 'blur' }
           ],
-          email: [
-            { type: 'email', required: false, message: '请输入邮件地址', trigger: 'blur' }
-          ]
+          email: [{ type: 'email', required: false, message: '请输入邮件地址', trigger: 'blur' }]
         },
         // 编辑界面数据
         editForm: {
@@ -182,7 +193,8 @@
     methods: {
       queryData() {
         let sef = this;
-        this.axios.post('/sys/sysuser/query', {
+        this.axios
+          .post('/sys/sysuser/query', {
           obj: {
             userName: sef.filters.userName
           },
@@ -190,12 +202,14 @@
             pageNum: sef.currentpage,
             pageSize: sef.pagesize
           }
-        }).then((res) => {
+          })
+          .then(res => {
           sef.tableData = res.data.list;
           sef.total = res.data.total;
           sef.loading = false;
-        }).catch((e) => {
-        });
+          })
+          .catch(() => {
+          });
       },
       handleSizeChange(value) {
         this.pagesize = value;
@@ -223,24 +237,27 @@
         };
       },
       addSubmit: function() {
-        var sef = this;
-        sef.$refs.addForm.validate((valid) => {
+        let sef = this;
+        sef.$refs.addForm.validate(valid => {
           if (valid) {
             sef.$confirm('确认提交吗？', '提示', {}).then(() => {
               sef.addLoading = true;
               // NProgress.start();
               let para = Object.assign({}, this.addForm);
-              this.axios.post('/sys/sysuser/add', {
-                'email': para.email,
-                'passwd': para.passwd,
-                'userName': para.userName,
-                'fullName': para.fullName
-              }).then((res) => {
+              this.axios
+                .post('/sys/sysuser/add', {
+                  email: para.email,
+                  passwd: para.passwd,
+                  userName: para.userName,
+                  fullName: para.fullName
+                })
+                .then(res => {
                 sef.addLoading = false;
                 sef.$refs['addForm'].resetFields();
                 sef.addFormVisible = false;
                 sef.queryData();
-              }).catch((e) => {
+                })
+                .catch(() => {
                 sef.addLoading = false;
                 this.addForm.userName = '';
               });
@@ -250,40 +267,41 @@
       },
       // 编辑
       editSubmit: function() {
-        var sef = this;
-        sef.$refs.editForm.validate((valid) => {
+        let sef = this;
+        sef.$refs.editForm.validate(valid => {
           if (valid) {
             sef.$confirm('确认提交吗？', '提示', {}).then(() => {
               sef.editLoading = true;
               // NProgress.start();
               let para = Object.assign({}, this.editForm);
-              this.axios.post('/sys/sysuser/update', {
-                'id': para.id,
-                'email': para.email,
-                'passwd': para.passwd,
-                'userName': para.userName,
-                'fullName': para.fullName
-              }).then((res) => {
+              this.axios
+                .post('/sys/sysuser/update', {
+                  id: para.id,
+                  email: para.email,
+                  passwd: para.passwd,
+                  userName: para.userName,
+                  fullName: para.fullName
+                })
+                .then(res => {
                 sef.editLoading = false;
                 sef.$refs['editForm'].resetFields();
                 sef.editFormVisible = false;
                 sef.queryData();
-              }).catch((e) => {
-              });
+                })
+                .catch(() => {
+                });
             });
           }
         });
       },
       // 删除
       handleDel: function(index, row) {
-        var sef = this;
+        let sef = this;
         this.$confirm('确认删除该记录吗?', '提示', {
           type: 'warning'
         }).then(() => {
           this.listLoading = true;
-          this.axios.post('/sys/sysuser/delete', [
-            row.id
-          ]).then((res) => {
+          this.axios.post('/sys/sysuser/delete', [row.id]).then(res => {
             sef.queryData();
           });
         });
@@ -298,25 +316,27 @@
       },
       // 批量删除
       batchRemove: function() {
-        var sef = this;
+        let sef = this;
         if (sef.sels == null) {
           return;
         }
         var ids = sef.sels.map(item => item.id);
         console.log(ids);
-        sef.$confirm('确认删除选中记录吗？', '提示', {
+        sef
+          .$confirm('确认删除选中记录吗？', '提示', {
           type: 'warning'
-        }).then(() => {
+          })
+          .then(() => {
           sef.listLoading = true;
-          this.axios.post('/sys/sysuser/delete', ids
-          ).then((res) => {
-            sef.queryData();
-          }).catch(() => {
-          });
+            this.axios
+              .post('/sys/sysuser/delete', ids)
+              .then(res => {
+                sef.queryData();
+              })
+              .catch(() => {
+              });
         });
       }
     }
   };
 </script>
-
-

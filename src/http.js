@@ -69,9 +69,6 @@ http.interceptors.response.use(
       if (res.config.url.endsWith('/sys/sysuser/login')) {
         return res;
       } else {
-        Message.success({
-          message: '操作成功'
-        });
         return res.data;
       }
     } else if (status === -101) {
