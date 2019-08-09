@@ -2,8 +2,8 @@
   <section>
     <el-form ref="filters" :model="filters" label-width="120px">
       <el-row>
-        <el-col :span="5">
-          <el-form-item label="用户名" prop="acType">
+        <el-col :span="6">
+          <el-form-item label="用户名" prop="userName">
             <el-input v-model="filters.userName"></el-input>
           </el-form-item>
         </el-col>
@@ -16,6 +16,66 @@
         </el-col>
       </el-row>
     </el-form>
+    <el-table
+      v-loading="loading"
+      element-loading-text="加载数据中"
+      :data="tableData"
+      @selection-change="handleSelectionChange"
+      border
+      :row-class-name="addRowClass"
+    >
+      <el-table-column type="selection" width="55"></el-table-column>
+      <el-table-column label="编号" prop="id" align="center" min-width="30"></el-table-column>
+      <el-table-column label="用户名" prop="userName"></el-table-column>
+      <el-table-column label="密码" prop="passwd"></el-table-column>
+      <el-table-column label="用户全称" prop="fullName"></el-table-column>
+      <el-table-column label="邮件地址" prop="email"></el-table-column>
+      <el-table-column label="操作" align="center" min-width="50">
+        <template scope="scope">
+          <i class="el-icon-edit" @click="handleEdit(scope.$index, scope.row)"><span>编辑</span></i>
+          <i style="width:20px;">&nbsp;</i>
+          <i class="el-icon-delete" @click="handleDel(scope.$index, scope.row)"><span>删除</span></i>
+        </template>
+      </el-table-column>
+    </el-table>
+    <!--工具条-->
+    <el-col :span="24" class="toolbar" style="margin-top: 16px; ">
+      <el-button type="danger" @click="batchRemove" :disabled="this.sels.length === 0">批量删除</el-button>
+      <el-pagination
+        style="text-align:right;float:right;"
+        layout="total, sizes, prev, pager, next, jumper"
+        :page-sizes="[15, 30, 50, 100]"
+        :page-size="pagesize"
+        :total="total"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      >
+      </el-pagination>
+    </el-col>
+    <!--编辑界面-->
+    <el-dialog title="编辑" :visible.sync="editFormVisible" :close-on-click-modal="false" :append-to-body="true">
+      <el-form :model="editForm" label-width="120px" :rules="editFormRules" ref="editForm">
+        <el-form-item label="主键" prop="id" hidden>
+          <el-input v-model="editForm.id"></el-input>
+        </el-form-item>
+        <el-form-item label="用户名" prop="userName">
+          <el-input v-model="editForm.userName" :readonly="true"></el-input>
+        </el-form-item>
+        <el-form-item label="密码" prop="passwd">
+          <el-input v-model="editForm.passwd"></el-input>
+        </el-form-item>
+        <el-form-item label="用户全称" prop="fullName">
+          <el-input v-model="editForm.fullName"></el-input>
+        </el-form-item>
+        <el-form-item label="邮件地址" prop="email">
+          <el-input v-model="editForm.email"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click.native="editFormVisible = false">取消</el-button>
+        <el-button type="primary" @click.native="editSubmit" :loading="editLoading">提交</el-button>
+      </div>
+    </el-dialog>
     <!--新增界面-->
     <el-dialog title="新增" :visible.sync="addFormVisible" :close-on-click-modal="false" :append-to-body="true">
       <el-form :model="addForm" label-width="120px" :rules="addFormRules" ref="addForm">
@@ -40,111 +100,239 @@
   </section>
 </template>
 <style scoped>
-  @import '../../resources/form-controls.css';
+@import '../../resources/form-controls.css';
 </style>
-<script>
-  export default {
-    created() {
-      this.queryApply();
-    },
-    data() {
-      return {
-        tableData: [],
-        filters: {
-          'userName': ''
-        },
-        addFormVisible: false, // 新增界面是否显示
-        addLoading: false,
-        addFormRules: {
-          userName: [
-            {required: true, message: '请输入用户名', trigger: 'blur'},
-            {min: 4, max: 32, message: '长度在4 到 32 个字符', trigger: 'blur'}
-          ],
-          passwd: [
-            {required: true, message: '请输入密码', trigger: 'blur'},
-            {min: 4, max: 32, message: '长度在 4 到 32 个字符', trigger: 'blur'}
-          ],
-          fullName: [
-            {required: true, message: '请输入用户全称', trigger: 'blur'},
-            {min: 1, max: 32, message: '长度在 1 到 32 个字符', trigger: 'blur'}
-          ],
-          email: [
-            {type: 'email', required: false, message: '请输入邮件地址', trigger: 'blur'}
-          ]
-        },
-        // 新增界面数据
-        addForm: {
-          email: '',
-          fullName: '',
-          passwd: '',
-          userName: ''
-        }
-      }
-    },
-    // 显示新增界面
-    methods: {
-      queryApply() {
-        debugger;
-        this.axios.post('/api/static/authority/query', {
-          obj: {
-            'authNameAbbr': ''
-          }
-        }).then((res) => {
-          if (res.data.status === 0) {
 
-          }
-        });
-      },
-      reset() {
-        this.$refs['filters'].resetFields();
-      },
-      handleAdd: function () {
-        this.addFormVisible = true;
-        this.addForm = {
-          email: '',
-          fullName: '',
-          passwd: '',
-          userName: ''
-        }
-      },
-      addSubmit: function () {
-        var sef = this;
-        sef.$refs.addForm.validate((valid) => {
-          if (valid) {
-            sef.$confirm('确认提交吗？', '提示', {}).then(() => {
-              sef.addLoading = true;
-              // NProgress.start();
-              let para = Object.assign({}, this.addForm);
-              debugger;
-              this.axios.post('/sys/sysuser/add', {
-                'email': para.email,
-                'passwd': para.passwd,
-                'userName': para.userName,
-                'fullName': para.fullName
-              }).then((res) => {
-                if (res.data.status === 0) {
-                  sef.addLoading = false;
-                  // NProgress.done();
-                  sef.$message({
-                    message: '提交成功',
-                    type: 'success'
-                  });
-                  sef.$refs['addForm'].resetFields();
-                  sef.addFormVisible = false;
-                } else {
-                  this.$message({
-                    type: 'error',
-                    message: res.data.data,
-                    center: true
-                  });
-                }
-              });
-            })
+<script>
+const POSITIVE = 0;
+const NEGATIVE = 1;
+
+export default {
+  created() {
+    this.queryData();
+  },
+  data() {
+    let checkUserName = (rule, value, callback) => {
+      this.axios
+        .post('/sys/sysuser/exist', {
+          userName: value
+        })
+        .then(res => {
+          if (res.data) {
+            callback(new Error('用户名已经存在'));
+          } else {
+            callback();
           }
         })
+        .catch(() => {});
+    };
+    return {
+      tableData: [],
+      filters: {
+        userName: ''
+      },
+      loading: false,
+      pagesize: 15,
+      currentpage: 1,
+      total: 0,
+      sels: [], // 列表选中列
+      addFormVisible: false, // 新增界面是否显示
+      addLoading: false,
+      addFormRules: {
+        userName: [
+          { required: true, message: '请输入用户名', trigger: 'blur' },
+          { min: 4, max: 32, message: '长度在4 到 32 个字符', trigger: 'blur' },
+          { validator: checkUserName, trigger: 'blur' }
+        ],
+        passwd: [
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { min: 4, max: 32, message: '长度在 4 到 32 个字符', trigger: 'blur' }
+        ],
+        fullName: [
+          { required: true, message: '请输入用户全称', trigger: 'blur' },
+          { min: 1, max: 32, message: '长度在 1 到 32 个字符', trigger: 'blur' }
+        ],
+        email: [{ type: 'email', required: false, message: '请输入邮件地址', trigger: 'blur' }]
+      },
+      editFormVisible: false, // 编辑界面是否显示
+      editLoading: false,
+      editFormRules: {
+        userName: [
+          { required: true, message: '请输入用户名', trigger: 'blur' },
+          { min: 4, max: 32, message: '长度在4 到 32 个字符', trigger: 'blur' }
+        ],
+        passwd: [
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { min: 4, max: 32, message: '长度在 4 到 32 个字符', trigger: 'blur' }
+        ],
+        fullName: [
+          { required: true, message: '请输入用户全称', trigger: 'blur' },
+          { min: 1, max: 32, message: '长度在 1 到 32 个字符', trigger: 'blur' }
+        ],
+        email: [{ type: 'email', required: false, message: '请输入邮件地址', trigger: 'blur' }]
+      },
+      // 编辑界面数据
+      editForm: {
+        id: 0,
+        email: '',
+        fullName: '',
+        passwd: '',
+        userName: ''
+      },
+      // 新增界面数据
+      addForm: {
+        email: '',
+        fullName: '',
+        passwd: '',
+        userName: ''
       }
+    };
+  },
+  // 显示新增界面
+  methods: {
+    queryData() {
+      let sef = this;
+      this.axios
+        .post('/sys/sysuser/query', {
+          obj: {
+            userName: sef.filters.userName
+          },
+          page: {
+            pageNum: sef.currentpage,
+            pageSize: sef.pagesize
+          }
+        })
+        .then(res => {
+          sef.tableData = res.data.list;
+          sef.total = res.data.total;
+          sef.loading = false;
+        })
+        .catch(() => {});
+    },
+    handleSizeChange(value) {
+      this.pagesize = value;
+      this.queryData();
+    },
+    handleCurrentChange(value) {
+      this.currentpage = value;
+      this.queryData();
+    },
+    addRowClass({ row, rowIndex }) {
+      if (row.rateType === NEGATIVE) {
+        return 'warning-row';
+      }
+    },
+    reset() {
+      this.$refs['filters'].resetFields();
+    },
+    handleAdd: function() {
+      this.addFormVisible = true;
+      this.addForm = {
+        email: '',
+        fullName: '',
+        passwd: '',
+        userName: ''
+      };
+    },
+    addSubmit: function() {
+      let sef = this;
+      sef.$refs.addForm.validate(valid => {
+        if (valid) {
+          sef.$confirm('确认提交吗？', '提示', {}).then(() => {
+            sef.addLoading = true;
+            // NProgress.start();
+            let para = Object.assign({}, this.addForm);
+            this.axios
+              .post('/sys/sysuser/add', {
+                email: para.email,
+                passwd: para.passwd,
+                userName: para.userName,
+                fullName: para.fullName
+              })
+              .then(res => {
+                sef.addLoading = false;
+                sef.$refs['addForm'].resetFields();
+                sef.addFormVisible = false;
+                sef.queryData();
+              })
+              .catch(() => {
+                sef.addLoading = false;
+                this.addForm.userName = '';
+              });
+          });
+        }
+      });
+    },
+    // 编辑
+    editSubmit: function() {
+      let sef = this;
+      sef.$refs.editForm.validate(valid => {
+        if (valid) {
+          sef.$confirm('确认提交吗？', '提示', {}).then(() => {
+            sef.editLoading = true;
+            // NProgress.start();
+            let para = Object.assign({}, this.editForm);
+            this.axios
+              .post('/sys/sysuser/update', {
+                id: para.id,
+                email: para.email,
+                passwd: para.passwd,
+                userName: para.userName,
+                fullName: para.fullName
+              })
+              .then(res => {
+                sef.editLoading = false;
+                sef.$refs['editForm'].resetFields();
+                sef.editFormVisible = false;
+                sef.queryData();
+              })
+              .catch(() => {});
+          });
+        }
+      });
+    },
+    // 删除
+    handleDel: function(index, row) {
+      let sef = this;
+      this.$confirm('确认删除该记录吗?', '提示', {
+        type: 'warning'
+      }).then(() => {
+        this.listLoading = true;
+        this.axios.post('/sys/sysuser/delete', [row.id]).then(res => {
+          sef.queryData();
+        });
+      });
+    },
+    // 显示编辑界面
+    handleEdit: function(index, row) {
+      this.editFormVisible = true;
+      this.editForm = Object.assign({}, row);
+    },
+    handleSelectionChange: function(sels) {
+      this.sels = sels;
+    },
+    // 批量删除
+    batchRemove: function() {
+      let sef = this;
+      if (sef.sels == null) {
+        return;
+      }
+      var ids = sef.sels.map(item => item.id);
+      console.log(ids);
+      sef
+        .$confirm('确认删除选中记录吗？', '提示', {
+          type: 'warning'
+        })
+        .then(() => {
+          sef.listLoading = true;
+          this.axios
+            .post('/sys/sysuser/delete', ids)
+            .then(res => {
+              sef.queryData();
+            })
+            .catch(() => {});
+        });
     }
   }
+};
 </script>
-
-

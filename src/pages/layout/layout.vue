@@ -36,6 +36,7 @@
         <i class="el-icon-adm-menu" :style="{transform: 'rotateZ(' + (this.isCollapsed ? '90' : '0') + 'deg)'}"></i>
         <span>Collapse</span>
       </div>
+
       <el-menu
         background-color="#424f63"
         text-color="#fff"
@@ -62,6 +63,7 @@
           </el-submenu>
         </template>
       </el-menu>
+
     </div>
 
     <div class="content-wrapper" ref="content-wrapper" :style="{left: this.isCollapsed?'64px':'200px'}">
@@ -295,8 +297,9 @@
       border-right: none;
       transition: all 0.3s ease-in-out;
 
+
       &:not(.el-menu--collapse) {
-        overflow-y: hidden;
+        overflow-y: auto;
         overflow-x: hidden;
       }
 
@@ -328,6 +331,24 @@
       .el-submenu, .el-menu-item {
         width: 100%;
       }
+    }
+
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background-color: $siderbarBackgroundColor;
+      -webkit-border-radius: 2em;
+      -moz-border-radius: 2em;
+      border-radius: 2em;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background-color: $siderbarBackgroundColor;
+      -webkit-border-radius: 2em;
+      -moz-border-radius: 2em;
+      border-radius: 2em;
     }
   }
 
