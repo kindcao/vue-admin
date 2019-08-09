@@ -2,17 +2,17 @@
   <div class='basic'>
     <el-form ref="filters" :model="filters" label-width="10px">
       <el-row>
-        <el-col :span="10">
+        <el-col :span="7">
           <el-form-item prop="adCompNumName">
             <el-input v-model="filters.adCompNumName" size="medium" placeholder="请输入AD指令号或描述"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="3">
+        <el-col :span="4">
           <el-form-item prop="issueAuthId">
-            <el-select v-model="filters.issueAuthId" placeholder="适航局" style="width:100%">
+            <el-select v-model="filters.issueAuthId" clearable filterable placeholder="适航局" style="width:140px">
               <el-option v-for="item in ADAdd_AuthorityList" :key="item.id" :label="item.authNameAbbr" :value="item.id">
                 <span style="float: left">{{ item.authNameAbbr }}</span>
-                <span style="float: left;margin-left: 10px">{{ item.authNation }}</span>
+                <span style="float: right; color: #8492a6; font-size: 13px">{{ item.authNation }}</span>
               </el-option>
             </el-select>
           </el-form-item>
@@ -21,7 +21,8 @@
           <el-form-item>
             <el-button type="primary" v-on:click="queryData" size="small">查询</el-button>
             <el-button type="primary" v-on:click="reset" size="small">重置</el-button>
-            <router-link :to="{ name: 'ADCompDocAdd', params: { id: '', action: 'addRef' }}"> <el-button type="primary">新增</el-button></router-link>
+            <router-link :to="'/Engineering/ADCompDocAdd/-1/addRef'"> <el-button type="primary">新增</el-button></router-link>
+            <!--<router-link :to="{ name: 'ADCompDocAdd', params: { id: '', action: 'addRef' }}"> <el-button type="primary">新增</el-button></router-link>-->
             <el-button plain v-on:click="handlerSeniorSearch" size="small">高级查询</el-button>
           </el-form-item>
         </el-col>

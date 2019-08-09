@@ -110,7 +110,7 @@
               {path: '/Engineering/MPEval', title: '维修大纲改版评估'}
             ]
           },
-          {
+          /* {
             path: '/MCC',
             title: '维修控制',
             icon: 'el-icon-adm-linechart',
@@ -147,7 +147,7 @@
             children: [
               {path: '/form/render', title: '渲染表单'}
             ]
-          },
+          }, */
           {
             path: '/system',
             title: '系统管理',
@@ -168,7 +168,7 @@
             path: '/user/SysUser',
             title: '用户管理',
             icon: 'el-icon-adm-user'
-          },
+          } /* ,
           {
             path: '/access/index',
             title: '权限管理',
@@ -183,7 +183,7 @@
             path: '/test/index',
             title: '测试',
             icon: 'el-icon-adm-formsetup'
-          }
+          } */
         ],
         isCollapsed: false,
         adminMenuShow: false

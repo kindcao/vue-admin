@@ -1,6 +1,6 @@
 <template>
   <section>
-    <el-form ref="form" :model="form" :rules="formRules" label-width="90px" style="width:100%;min-width:850px;">
+    <el-form ref="form" :model="form" :rules="formRules" label-width="90px" style="width:90%;min-width:850px;">
       <fieldset style="background: #f5f7fa;">
       <legend>AD文件</legend>
       <div v-for="(row, index) in docList" :key="index" class="ad-doc-info">
@@ -9,17 +9,11 @@
           <div style="float: left;width:300px"> 生效日期：{{ row.adDateEff }}</div>
         </div>
         <br/>
-        描述:
-        <template slot-scope="scope">
-          <el-popover placement="top-start" title="适航文件标题" width="500" trigger="hover" >
-            <div style="font-size: 9pt">{{row.adCompName}}</div>
-            <span slot="reference">{{ row.adCompName.substr(0,120)+'...' }}</span>
-          </el-popover>
-        </template>
+        描述：{{row.adCompName}}
       </div>
     </fieldset>
-      <fieldset>
-        <legend>{{form.acType}}飞机适用性</legend>
+      <fieldset style="height: 190px;">
+        <legend>{{form.acType}}<span style="font-weight: normal">飞机适用性</span></legend>
         <el-row hidden>
           <el-col :span="5">
             <el-form-item label="编码" prop="id">
@@ -33,21 +27,28 @@
           </el-col>
         </el-row>
         <el-row style="margin-top: -10px">
-          <el-col :span="6">
-            <el-form-item label="AD评估单号" prop="adEvalNumb">
-              <el-input v-model="form.adEvalNumb"></el-input>
+          <el-col :span="9">
+            <el-form-item label="AD评估单号" prop="adEvalNumb" label-width="100px">
+              <el-input v-model="form.adEvalNumb" style="width: 215px;"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
-            <el-form-item label="评估版次" prop="adEvalRev">
-              <el-input type="number" v-model.number="form.adEvalRev"></el-input>
+          <el-col :span="4">
+            <el-form-item label="评估版次" prop="adEvalRev" label-width="70px" >
+              <el-input type="number" v-model.number="form.adEvalRev" style="width:65px;"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
-            <el-form-item label="状态" prop="cnstIdStatus">
+          <el-col :span="5">
+            <el-form-item label="状态" prop="cnstIdStatus" label-width="50px">
               <el-radio-group v-model="form.cnstIdStatus" size="mini">
                 <el-radio-button v-for="(item,index) in ADEval_IdStatusList" :label="item.cnstId" :key="item.cnstId">{{item.descTxt}}</el-radio-button>
               </el-radio-group>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="20">
+            <el-form-item prop="sumRev" label-width="0px">
+              <el-input type="textarea" placeholder="本次改版概况" v-model="form.sumRev" maxlength="1024" rows="5" show-word-limit></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -56,7 +57,7 @@
         <el-tab-pane>
           <span slot="label"><i class="fa fa-plane" style="font-size: 1.3em;margin-top: 15px;"></i> 适用性评估列表</span>
           <el-row>
-            <el-col :span="24" align="left">
+            <el-col :span="20" align="left">
               <el-form-item label="适用部位" prop="cnstIdComp">
                 <el-radio-group v-model="form.cnstIdComp" size="small" :disabled="tableData.length > 0">
                   <el-radio-button v-for="(item,index) in ADEval_CnstValCompIdSubList" :label="item.cnstId" :key="item.cnstId">{{item.descTxt}}</el-radio-button>
@@ -65,7 +66,7 @@
             </el-col>
           </el-row>
           <div>
-            <div style="float: left; width: 80%">
+            <div style="float: left; width: 65%">
               <el-table v-loading="loading" element-loading-text="加载数据中" :data='tableData' border>
                 <el-table-column label="飞机注册号" prop="acReg"  min-width="15%"></el-table-column>
                 <el-table-column label="飞机序号" prop="acSn" min-width="15%"></el-table-column>
@@ -80,7 +81,7 @@
                 </el-table-column>
               </el-table>
             </div>
-            <div style="float: right; width: 15%">
+            <div style="float: left; width: 15%;padding-left: 10px;">
               <el-button type="primary" plain @click="handleEdit(null, null, 'addRef')">新增</el-button>
             </div>
           </div>
@@ -88,54 +89,36 @@
         <el-tab-pane label="评估结论" style="height: 120px">
           <span slot="label"><i class="fa fa-audio-description fa-lg" style="font-size: 1.5em;"></i> 评估结论</span>
           <el-row>
-            <el-col :span="24">
+            <el-col :span="20">
               <el-form-item prop="adEvalConclusion" label-width="0px">
                 <el-input type="textarea" placeholder="评估结论" v-model="form.adEvalConclusion" maxlength="128" rows="5" show-word-limit></el-input>
               </el-form-item>
             </el-col>
           </el-row>
         </el-tab-pane>
-        <el-tab-pane label="本次改版概况" style="height: 120px">
-          <span slot="label"><i class="fa fa-calendar" style="font-size: 1.3em;"></i> 本次改版概况</span>
-          <el-row>
-            <el-col :span="24">
-              <el-form-item prop="sumRev" label-width="0px">
-                <el-input type="textarea" placeholder="本次改版概况" v-model="form.sumRev" maxlength="1024" rows="5" show-word-limit>
-                  <i slot="prefix" class="el-input__icon el-icon-search"></i>
-                </el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-        </el-tab-pane>
-        <el-tab-pane label="工程文件生成" style="height: 120px">
+        <el-tab-pane label="工程文件生成">
           <span slot="label"><i class="fa fa-wrench" style="font-size: 1.3em;"></i> 工程文件生成</span>
           <el-row style="margin-bottom: 20px;">
-            <el-col :span="12">
-              工程指令列表
-            </el-col>
-            <el-col :span="12">
+            <el-col :span="20">
               <el-form-item prop="followingEo" label-width="10px">
                 <el-input type="textarea" placeholder="工程指令" v-model="form.followingEo" maxlength="128" show-word-limit></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="12">
-              维护提示信息列表
-            </el-col>
-            <el-col :span="12">
+            <el-col :span="20">
               <el-form-item prop="followingMt" label-width="10px">
                 <el-input type="textarea" placeholder="维护提示" v-model="form.followingMt" maxlength="128" show-word-limit></el-input>
               </el-form-item>
             </el-col>
           </el-row>
         </el-tab-pane>
-        <el-tab-pane label="限制器材">
+        <el-tab-pane label="限制器材" style="height: 120px">
           <span slot="label"><i class="fa fa-cubes" style="font-size: 1.3em;"></i> 限制器材</span>
           <el-row>
-            <el-col :span="24">
+            <el-col :span="20">
               <el-form-item prop="followingLmtPart" label-width="10px">
-                <el-input type="textarea" placeholder="限制器材" v-model="form.followingLmtPart" maxlength="128" show-word-limit></el-input>
+                <el-input type="textarea" placeholder="限制器材" v-model="form.followingLmtPart" maxlength="128" rows="5" show-word-limit></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -844,10 +827,19 @@
       // 编辑
       applySubmit: function () {
         let self = this;
+        debugger;
         let adEvalId = this.getAdEvalId();
         if (adEvalId === -1) return;
         self.$refs.dataForm.validate((valid) => {
           if (valid) {
+            let para = Object.assign({}, self.dataForm);
+            let actArr = self.tableData.filter(item => item.acId === para.acId);
+            if (self.utils.isNotEmpty(actArr) && actArr.length > 0) {
+              this.$alert(para.acReg + '已经存在，请选择其他飞机.', '提醒', {
+                dangerouslyUseHTMLString: true
+              });
+              return;
+            }
             self.$confirm('确认提交吗？', '提示', {}).then(() => {
               self.loading = true;
               // NProgress.start();
@@ -865,8 +857,6 @@
                   "    'followingMt': '" + evalPara.followingMt + "'," +
                   "    'sumRev': '" + evalPara.sumRev + "'" +
                   '}';
-
-              let para = Object.assign({}, self.dataForm);
               let postUrl = 'http://106.12.133.158:1881/api/pm/adcompapply/';
               if (para.action !== '') {
                 postUrl += para.action;

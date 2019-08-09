@@ -45,7 +45,7 @@
 <script>
   export default {
     created() {
-
+      this.queryApply();
     },
     data() {
       return {
@@ -83,7 +83,17 @@
     },
     // 显示新增界面
     methods: {
-      queryData() {
+      queryApply() {
+        debugger;
+        this.axios.post('/api/static/authority/query', {
+          obj: {
+            'authNameAbbr': ''
+          }
+        }).then((res) => {
+          if (res.data.status === 0) {
+
+          }
+        });
       },
       reset() {
         this.$refs['filters'].resetFields();
@@ -105,6 +115,7 @@
               sef.addLoading = true;
               // NProgress.start();
               let para = Object.assign({}, this.addForm);
+              debugger;
               this.axios.post('/sys/sysuser/add', {
                 'email': para.email,
                 'passwd': para.passwd,

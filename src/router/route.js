@@ -64,13 +64,13 @@ export const otherRouter = {
       component: () => import('src/pages/system/ACInfoAdd')
     },
     {
-      path: '/Engineering/ADCompDocAdd',
+      path: '/Engineering/ADCompDocAdd/:id/:action',
       name: 'ADCompDocAdd',
       title: '适航文件接收',
       component: () => import('src/pages/Engineering/ADCompDocAdd')
     },
     {
-      path: '/Engineering/ADEvalAdd',
+      path: '/Engineering/ADEvalAdd/:id/:acTypeId/:action',
       name: 'ADEvalAdd',
       title: '适航文件评价',
       component: () => import('src/pages/Engineering/ADEvalAdd')
@@ -249,7 +249,7 @@ export const appRouter = [
       {
         path: 'ConstantValTree',
         name: 'ConstantValTree',
-        title: '常量字典2',
+        title: '常量字典',
         component: () => import('src/pages/system/ConstantValTree')
       },
       {

@@ -1,5 +1,5 @@
 <template>
-  <el-form ref="form" :model="form" :rules="formRules" label-width="120px" @submit.prevent="onSubmit"
+  <el-form ref="form" :model="form" :rules="formRules" @submit.prevent="onSubmit"
            style="margin:0 0 100px;width:90%;min-width:850px;">
     <el-row hidden>
       <el-col :span="18">
@@ -9,41 +9,42 @@
       </el-col>
     </el-row>
     <el-row>
-      <el-col :span="8">
-        <el-form-item label="适航局" prop="issueAuthId">
-          <el-select v-model="form.issueAuthId"  placeholder="请选择适航局" style="width:100%">
-            <el-option  v-for="item in ADAdd_AuthorityList" :key="item.id" :label="item.authNameAbbr" :value="item.id"></el-option>
+      <el-col :span="4">
+        <el-form-item prop="issueAuthId" label-width="10">
+          <el-select v-model="form.issueAuthId" clearable filterable placeholder="适航局" style="width:160px">
+            <el-option v-for="item in ADAdd_AuthorityList" :key="item.id" :label="item.authNameAbbr + '-' + item.authNation" :value="item.id">
+              <span style="float: left">{{ item.authNameAbbr }}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.authNation }}</span>
+            </el-option>
           </el-select>
         </el-form-item>
       </el-col>
-      <el-col :span="8">
-        <el-form-item label="适航指令号" prop="adCompNum" label-width="100px">
-          <el-input v-model="form.adCompNum"></el-input>
+      <el-col :span="5">
+        <el-form-item prop="adCompNum" label-width="10">
+          <el-input v-model="form.adCompNum" placeholder="适航指令号" style="width:180px"></el-input>
         </el-form-item>
       </el-col>
-      <el-col :span="4">
-        <el-form-item label="版本" prop="adCompVer" label-width="80px">
-          <el-input type="number" v-model.number="form.adCompVer"></el-input>
+      <el-col :span="2">
+        <el-form-item prop="adCompVer" label-width="0">
+          <el-input type="number" v-model.number="form.adCompVer" placeholder="版本" style="width:80px"></el-input>
+        </el-form-item>
+      </el-col>
+      <el-col :span="3">
+        <el-form-item prop="adDateEff" style="margin-left: 10px;">
+          <el-date-picker type="date" placeholder="生效日期" v-model="form.adDateEff" format="yyyy-MM-dd" value-format="yyyy-MM-dd"  style="width: 140px"></el-date-picker>
         </el-form-item>
       </el-col>
     </el-row>
     <el-row style="margin: 10px 0px 28px">
-      <el-col :span="20">
-        <el-form-item label="描述" prop="adCompName">
-          <el-input v-model="form.adCompName" type="textarea"></el-input>
-        </el-form-item>
-      </el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="8">
-        <el-form-item label="生效日期" prop="adDateEff">
-          <el-date-picker type="date" placeholder="选择日期" v-model="form.adDateEff" format="yyyy-MM-dd" value-format="yyyy-MM-dd"  style="width: 100%;"></el-date-picker>
+      <el-col :span="14">
+        <el-form-item prop="adCompName" label-width="10">
+          <el-input v-model="form.adCompName" placeholder="描述"  type="textarea"></el-input>
         </el-form-item>
       </el-col>
     </el-row>
     <el-row :style='fileUploadHeight' class="fileUploadRow">
-      <el-col :span="18">
-        <el-form-item label="生效日期" prop="fileName">
+      <el-col :span="14">
+        <el-form-item prop="fileName" label-width="10">
           <el-upload
             class="upload-demo"
             action="http://106.12.133.158:1881/api/common/upload"
@@ -58,31 +59,32 @@
       </el-col>
     </el-row>
     <el-row hidden="true">
-      <el-col :span="9">
+      <el-col :span="7">
         <el-form-item label="创建人" prop="createById">
           <span>{{form.createById}}</span>
         </el-form-item>
       </el-col>
-      <el-col :span="9">
+      <el-col :span="7">
         <el-form-item label="创建时间" prop="createTime">
           <span>{{form.createTime}}</span>
         </el-form-item>
       </el-col>
     </el-row>
     <el-row hidden="true">
-      <el-col :span="9">
+      <el-col :span="7">
         <el-form-item label="更新人" prop="updateById">
           <span>{{form.updateById}}</span>
         </el-form-item>
       </el-col>
-      <el-col :span="9">
+      <el-col :span="7">
         <el-form-item label="更新时间" prop="updateTime">
           <span>{{form.updateTime}}</span>
         </el-form-item>
       </el-col>
     </el-row>
-    <el-form-item label="评估机型列表">
-      <div style="float: left; width: 75%">
+    <el-form-item style="min-width: 700px">
+      <div style="float: left; width: 600px">评估机型列表
+        评估机型列表
         <el-table :data='tableData' v-loading="loading" element-loading-text="加载数据中" style="width: 100%;" stripe border fit highlight-current-row>
           <el-table-column label="机型" align='center' width="180px">
             <template slot-scope="scope">
@@ -113,8 +115,8 @@
           </el-table-column>
         </el-table>
       </div>
-      <div style="float: right; width: 20%">
-        <el-button type="primary" plain @click="addTableRow">新增机型</el-button>
+      <div style="float: left; width: 100px;margin: 35px 10px;">
+        <el-button type="primary" icon="el-icon-plus" @click="addTableRow">添加</el-button>
       </div>
     </el-form-item>
     <!--<el-row>
@@ -131,7 +133,7 @@
         </el-form-item>
       </el-col>
     </el-row>-->
-    <el-col :span="24" class="toolbar" style="margin: 20px 0;">
+    <el-col :span="24" class="toolbar">
       <el-form-item class="clearfix">
         <el-button type="primary" @click.native="dataSubmit" :loading="loading">保存</el-button>
         <el-button @click.native="$router.back(-1)"  class="el-icon-back">返回</el-button>
@@ -471,7 +473,11 @@
           dataType: 'json',
           success: function (result) {
             if (result.status === 0) {
-              self.tableData = result.data;
+              self.tableData = [];
+              result.data.forEach(function (item, i) {
+                self.tableData.push(item);
+                self.tableData[i].ActionStatus = 0;
+              });
             } else {
               console.log(result.status);
             }
@@ -593,26 +599,25 @@
           }
         });
       },
-      vilidateAdEval: function(dataList, arrIndex) {
+      vilidateAdEval: function(dataList) {
         let self = this;
-        let alarmMessage = '';
-        let adEvalList = dataList;
-        if (adEvalList !== null && adEvalList !== undefined && adEvalList.length > 0) {
-          for (let i = 0; i < adEvalList.length; i++) {
-            if (self.utils.isEmpty(adEvalList[i].acTypeId)) {
-              alarmMessage += '第' + (arrIndex + i + 1) + '行未选择机型.<br/>';
+        let message = '';
+        if (dataList !== null && dataList !== undefined && dataList.length > 0) {
+          for (let i = 0; i < dataList.length; i++) {
+            if (self.utils.isEmpty(dataList[i].acTypeId)) {
+              message += '请选择机型.<br/>';
             }
-            if (self.utils.isEmpty(adEvalList[i].acMake)) {
-              alarmMessage += '第' + (arrIndex + i + 1) + '行制造商为空.<br/>';
+            if (self.utils.isEmpty(dataList[i].acMake)) {
+              message += '请重新选择机型，以便带出制造商.<br/>';
             }
-            if (self.utils.isEmpty(adEvalList[i].userNo)) {
-              alarmMessage += '第' + (arrIndex + i + 1) + '行评估工程师为空.<br/>';
+            if (self.utils.isEmpty(dataList[i].userNo)) {
+              message += '请选择评估工程师.<br/>';
             }
           }
         }
-        if (!self.utils.isEmpty(alarmMessage)) {
+        if (!self.utils.isEmpty(message)) {
           self.loading = false;
-          self.$alert("<font color='red'>" + alarmMessage + '</font>', '评估机型数据校验不通过', {dangerouslyUseHTMLString: true});
+          self.$alert("<font color='red'>" + message + '</font>', '评估机型数据校验不通过', {dangerouslyUseHTMLString: true});
           return false;
         }
         return true;
@@ -716,26 +721,19 @@
         this.$confirm('请确认是否删除?', '提示', {
           type: 'warning'
         }).then(() => {
+          // 在storeList获取机型对应的实体数据和对应的行索引
+          let objEntity = self.findEntityAndIndex(self.storeList, row.acTypeId);
+          // 判断数据长度大于0，表示存在数据，从数组中删除
+          if (objEntity.length > 0) {
+            self.storeList.splice(objEntity.index, 1);
+          }
           // 适航文件接收编辑
           if (self.actionDo === 'update') {
-            self.deleteAdCompEval(row.id); // 适航指令评估 数据库已经存在，直接删除（后端要进行校验，如流程执行中，则不能删除）
-          } else {
-            // storeList 过滤是否存在符合id的数据，,则判断是否
-            let arrIndex = self.getIndex(row.id);
-            // 若ActionStatus不存在，则表示数据库中已经存在的数据,标记为 -3 ，后续在数据库中删除即可。
-            if (row.ActionStatus === null || row.ActionStatus === undefined) {
-              // arrIndex若为-1，表示数组中不存在ID的对象,则新增，将当前行数据存放到storeList数组中
-              if (arrIndex === -1) {
-                let jsonRow = JSON.parse(JSON.stringify(row));
-                jsonRow.ActionStatus = -3;
-                self.storeList.push(jsonRow); // 将当前行数据存放到storeList数组中
-              } else { // 否则表示storeList存在满足id的数据，根据arrIndex索引找到它，修改相关属性的值
-                self.storeList[arrIndex].ActionStatus = -3;
-              }
-            } else if (arrIndex !== -1) { // 否则表示数据库不存在，并判断是否在storeList存在，若存在删除数组即可，无需操作数据库
-              self.storeList.splice(arrIndex, 1);
+            if (row.ActionStatus === 0) { //
+              self.deleteAdCompEval(row.id); // 适航指令评估 数据库已经存在，直接删除（后端要进行校验，如流程执行中，则不能删除）
             }
-            self.tableData.splice(index, 1);
+          } else { // 表示tableData数据在缓存中，数据库不存在，直接删除缓存数据即可
+            self.tableData.splice(objEntity.index, 1);
           }
         }).catch(() => {
         });
@@ -747,60 +745,72 @@
             return this.$message.warning('请先保存当前编辑项');
           }
         }
-        // storeList 过滤是否存在符合id的数据，则判断是否
-        let arrIndex = this.getIndex(row.id);
-        // arrIndex若为-1，表示数组中不存在ID的对象,则新增，将当前行数据存放到storeList数组中
-        if (arrIndex === -1) {
-          let jsonRow = JSON.parse(JSON.stringify(row));
-          this.storeList.push(jsonRow); // 将当前行数据存放到storeList数组中
-        } else {
-          this.storeList[arrIndex].acTypeId = row.acTypeId;
-          this.storeList[arrIndex].acType = row.acType;
-          this.storeList[arrIndex].acMake = row.acMake;
-          this.storeList[arrIndex].userNo = row.userNo;
-          this.storeList[arrIndex].userName = row.userName;
+        // 在storeList获取机型对应的实体数据和对应的行索引
+        let objEntity = this.findEntityAndIndex(this.storeList, row.acTypeId);
+        // 若数据长度为0，表示数组中不存在此机型数据
+        if (objEntity.length === 0) {
+          this.storeList.push(JSON.parse(JSON.stringify(row))); // 将当前行数据存放到storeList数组中
+        } else { // 表示存在数据，则直接修改即可
+          this.storeList[objEntity.index].acTypeId = row.acTypeId;
+          this.storeList[objEntity.index].acType = row.acType;
+          this.storeList[objEntity.index].acMake = row.acMake;
+          this.storeList[objEntity.index].userNo = row.userNo;
+          this.storeList[objEntity.index].userName = row.userName;
         }
-        // this.sel = JSON.parse(JSON.stringify(row));
         this.$set(row, 'enabled', true)
       },
       // 编辑成功
       confirmEdit(index, row) {
+        if (!this.vilidateAdEval([row])) {
+          return;
+        }
+        debugger;
+        // 在storeList获取机型对应的实体数据和对应的行索引
+        let tableEntity = this.findEntityAndIndex(this.tableData, row.acTypeId);
+        if (tableEntity.length > 1) {
+          this.$alert(row.acType + '机型重复，请选择其他机型', '校验机型唯一性约束', {dangerouslyUseHTMLString: true});
+          return;
+        }
+        let storeEntity = this.findEntityAndIndex(this.storeList, row.acTypeId);
+        /* let tableArr = this.tableData.filter(item => item.acTypeId === row.acTypeId);
+        let storeArr = this.storeList.filter(item => item.acTypeId === row.acTypeId);
+        let tableArr = this.tableData.filter(item => item.acTypeId === row.acTypeId);
+        let storeArr = this.storeList.filter(item => item.acTypeId === acTypeId);
+        if (tableArr.length > 0 || storeArr.length > 0) {
+          this.$alert(tableArr[0].acType + '机型重复，请选择其他机型', '校验机型唯一性约束', {dangerouslyUseHTMLString: true});
+          return false;
+        } */
         // 适航文件接收编辑
         if (this.actionDo === 'update') {
-          if (row.ActionStatus === null || row.ActionStatus === undefined) {
+          if (row.ActionStatus === 0) {
             this.handleAdCompEval(index, row, 'update'); // 适航指令评估 数据库已经存在
           } else if (row.ActionStatus === -1) { // 表示新增
-            this.storeList.splice(index, 1);// 在临时存储数组中删除
+            if (tableEntity.length > 0 || storeEntity.length > 1) {
+              this.$alert(row.acType + '机型重复，请选择其他机型', '校验机型唯一性约束', {dangerouslyUseHTMLString: true});
+              return;
+            }
+            if (storeEntity.length > 0) {
+              this.storeList.splice(storeEntity.index, 1);// 在临时存储数组中删除
+            }
             this.handleAdCompEval(index, row, 'add'); // 新增数据
           }
         } else {
-          // storeList 过滤是否存在符合id的数据，,则判断是否
-          let arrIndex = this.getIndex(row.id);
-          if (!this.vilidateAdEval([row], arrIndex === -1 ? 0 : arrIndex)) {
-            return;
-          }
-          // arrIndex若为-1，表示数组中不存在ID的对象,则新增，将当前行数据存放到storeList数组中
-          if (arrIndex === -1) {
+          // 若数据长度为0，表示数组中不存在机型,则将数据行添加到storeList数组中
+          if (storeEntity.length === 0) {
             let jsonRow = JSON.parse(JSON.stringify(row));
-            // 若ActionStatus不存在，则表示从数据库中已经存在的数据,标记为 -2 ，表示修改，否则表示新增的数据（缓存中，后续需要插入到数据库）
-            if (row.ActionStatus === null || row.ActionStatus === undefined) {
-              jsonRow.ActionStatus = -2;
-            } else {
-              jsonRow.ActionStatus = -1;
-            }
+            jsonRow.ActionStatus = -1;
             this.storeList.push(jsonRow); // 将当前行数据存放到storeList数组中
           } else {
-            // 否则表示storeList存在满足id的数据，根据arrIndex索引找到它，修改相关属性的值
-            this.storeList[arrIndex].acTypeId = row.acTypeId;
-            this.storeList[arrIndex].acType = row.acType;
-            this.storeList[arrIndex].acMake = row.acMake;
-            this.storeList[arrIndex].userNo = row.userNo;
-            this.storeList[arrIndex].userName = row.userName;
-            if (row.ActionStatus === null || row.ActionStatus === undefined) {
-              this.storeList[arrIndex].ActionStatus = -2;
-            } else {
-              this.storeList[arrIndex].ActionStatus = -1;
+            if (storeEntity.length > 1) {
+              this.$alert(row.acType + '机型重复，请选择其他机型', '校验机型唯一性约束', {dangerouslyUseHTMLString: true});
+              return;
             }
+            // 否则表示storeList存在机型，根据arrIndex索引找到它，修改相关属性的值
+            this.storeList[storeEntity.index].acTypeId = row.acTypeId;
+            this.storeList[storeEntity.index].acType = row.acType;
+            this.storeList[storeEntity.index].acMake = row.acMake;
+            this.storeList[storeEntity.index].userNo = row.userNo;
+            this.storeList[storeEntity.index].userName = row.userName;
           }
 
           let msg = '';
@@ -820,31 +830,53 @@
         this.$confirm('请确认是否取消编辑?', '提示', {
           type: 'warning'
         }).then(() => {
-          let arrIndex = self.getIndex(row.id);
-          // 是否是取消操作
-          if (arrIndex !== -1) {
-            let results = this.storeList[arrIndex];
+          let storeEntity = self.findEntityAndIndex(this.storeList, row.acTypeId);
+          let arrIndex = self.getIndex(row.acTypeId);
+          // 存在数据行
+          if (storeEntity.length > 0) {
+            let results = storeEntity.row[storeEntity.index];
             if (results !== null) {
-              this.$set(row, 'acTypeId', results.acTypeId);
-              this.$set(row, 'acType', results.acType);
-              this.$set(row, 'acMake', results.acMake);
-              this.$set(row, 'userNo', results.userNo);
-              this.$set(row, 'userName', results.userName);
+              if (self.utils.isEmpty(results.acTypeId) || self.utils.isEmpty(results.acMake) || self.utils.isEmpty(results.userNo)) {
+                self.tableData.splice(index, 1);
+              } else {
+                this.$set(row, 'acTypeId', results.acTypeId);
+                this.$set(row, 'acType', results.acType);
+                this.$set(row, 'acMake', results.acMake);
+                this.$set(row, 'userNo', results.userNo);
+                this.$set(row, 'userName', results.userName);
+                this.$set(row, 'ActionStatus', results.ActionStatus);
+              }
             }
+          } else if (row.ActionStatus === -1 &&
+            (self.utils.isEmpty(row.acTypeId) || self.utils.isEmpty(row.acMake) || self.utils.isEmpty(row.userNo))) {
+            self.tableData.splice(index, 1);
           }
           this.$set(row, 'enabled', false);
         }).catch(() => {
         });
       },
-      getIndex: function (id) {
+      getIndex: function (acTypeId) {
         let arrIndex = -1;
         for (let i = 0; i < this.storeList.length; i++) {
-          if (this.storeList[i].id === id) {
+          if (this.storeList[i].acTypeId === acTypeId) {
             arrIndex = i;
             break;
           }
         }
         return arrIndex;
+      },
+      findEntityAndIndex: function(dataList, acTypeId) {
+        let objEntity = { index: -1, length: 0, row: [] };
+        if (dataList !== null && dataList !== undefined && dataList.length > 0) {
+          for (let i = 0; i < dataList.length; i++) {
+            if (dataList[i].acTypeId === acTypeId) {
+              objEntity.index = i;
+              objEntity.length++;
+              objEntity.row.push(dataList[i]);
+            }
+          }
+        }
+        return objEntity;
       }
     }
   };

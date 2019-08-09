@@ -2,51 +2,54 @@
   <div class='basic'>
     <el-form ref="filters" :model="filters">
       <el-row>
-        <el-col :span="10">
-          <el-form-item prop="adKeyword" style="margin-left: -20px">
-            <el-input v-model="filters.adEvalNumb" size="medium" placeholder="请输入AD号码或描述"></el-input>
+        <el-col :span="6">
+          <el-form-item prop="adKeyword">
+            <el-input v-model="filters.adEvalNumb" size="medium" placeholder="请输入AD号码或描述" style="width:280px"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="5">
+        <el-col :span="4" style="margin-left: 13px;">
           <el-form-item prop="issueAuthId">
-            <el-select v-model="filters.issueAuthId" placeholder="请选择适航局" style="width:100%">
-              <el-option  v-for="item in ADAdd_AuthorityList" :key="item.id" :label="item.authNameAbbr" :value="item.id"></el-option>
+            <el-select v-model="filters.issueAuthId" clearable filterable placeholder="适航局" style="width:140px">
+              <el-option v-for="item in ADAdd_AuthorityList" :key="item.id" :label="item.authNameAbbr" :value="item.id">
+                <span style="float: left">{{ item.authNameAbbr }}</span>
+                <span style="float: right; color: #8492a6; font-size: 13px">{{ item.authNation }}</span>
+              </el-option>
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="9">
-          <el-form-item>
-            <el-button type="primary" v-on:click="queryData" size="small">查询</el-button>
-            <el-button type="primary" v-on:click="reset" size="small">重置</el-button>
-            <router-link :to="{ name: 'ADEvalAdd', params: { id: '', action: 'add' }}"> <el-button type="primary">新增</el-button></router-link>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="3">
-          <el-form-item prop="adCompVer" style="width:110px;margin-left: -20px">
-            <!--<el-input type="number" v-model.number="filters.adCompVer" @keydown.native="handleInput"></el-input>-->
-            <el-input-number v-model.number="filters.adCompVer" placeholder="版本" style="width:120px"></el-input-number>
-          </el-form-item>
-        </el-col>
-        <el-col :span="4">
-          <el-form-item prop="adDateEff" style="width:100px;">
-            <el-date-picker type="date" placeholder="自生效日期" v-model="filters.adDateEff" size="medium" style="width:140px"></el-date-picker>
-          </el-form-item>
-        </el-col>
-        <el-col :span="3">
-          <el-form-item prop="adDateEffEnd" style="width:100px;margin-left: -35px">
-            <el-date-picker type="date" placeholder="到生效日期" v-model="filters.adDateEffEnd" size="medium" style="width:140px"></el-date-picker>
-          </el-form-item>
-        </el-col>
-        <el-col :span="5" style="margin: -2px 0px">
+        <el-col :span="4" style="margin-top: -2px;margin-left: -30px;">
           <el-form-item prop="cnstIdStatus">
             <el-radio-group v-model="filters.cnstIdStatus" size="mini">
               <el-radio-button v-for="(item,index) in ADAdd_ADApplyStatus" :label="item.cnstId" :key="item.cnstId">{{item.descTxt}}</el-radio-button>
             </el-radio-group>
           </el-form-item>
         </el-col>
-        <el-col :span="9" style="margin: -2px 0px 0px -50px">
+        <el-col :span="10">
+          <el-form-item>
+            <el-button type="primary" v-on:click="queryData" size="small">查询</el-button>
+            <el-button type="primary" v-on:click="reset" size="small">重置</el-button>
+            <el-button plain v-on:click="handlerSeniorSearch" size="small">高级查询</el-button>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row v-if="isShowSinorSearchPanel === true">
+        <el-col :span="3">
+          <el-form-item prop="adCompVer" style="margin-top:-2px">
+            <!--<el-input type="number" v-model.number="filters.adCompVer" @keydown.native="handleInput"></el-input>-->
+            <el-input-number v-model.number="filters.adCompVer" placeholder="版本" style="width:120px"></el-input-number>
+          </el-form-item>
+        </el-col>
+        <el-col :span="3">
+          <el-form-item prop="adDateEff">
+            <el-date-picker type="date" placeholder="自生效日期" v-model="filters.adDateEff" size="medium" style="width:140px"></el-date-picker>
+          </el-form-item>
+        </el-col>
+        <el-col :span="4">
+            <el-form-item prop="adDateEffEnd"><span style="margin-left:5px;">-</span>
+              <el-date-picker type="date" placeholder="到生效日期" v-model="filters.adDateEffEnd" size="medium" style="width:140px"></el-date-picker>
+            </el-form-item>
+        </el-col>
+        <el-col span="9" style="margin: -2px 0px 0px -17px">
           <el-form-item prop="cnstIdComp">
             <el-radio-group v-model="filters.cnstIdComp" size="mini">
               <el-radio-button v-for="(item,index) in ADAdd_CnstValCompIdList" :label="item.cnstId" :key="item.cnstId">{{item.descTxt}}</el-radio-button>
@@ -84,13 +87,6 @@
                   <li><el-button type="primary" plain @click.native="browserAd(4, props.row, '工程文件生成')">工程文件生成</el-button></li>
                   <li><el-button type="primary" plain @click.native="browserAd(5, props.row, '限制器材')">限制器材</el-button></li>
                 </ul>
-                <!--<div style="margin: 20px auto">
-                  <div style="float: left;width: 120px;margin-right: 25px;text-align: center"><el-button type="primary" plain>适用性评估列表</el-button></div>
-                  <div style="float: left;width: 120px;text-align: center"><el-button type="primary" plain>评估结论</el-button></div>
-                  <div style="float: left;width: 120px;margin-right: 15px;text-align: center"><el-button type="primary" plain>历史记录</el-button></div>
-                  <div style="float: left;width: 120px;margin-right: 15px;text-align: center"><el-button type="primary" plain>工程文件生成</el-button></div>
-                  <div style="float: left;width: 120px;text-align: center"><el-button type="primary" plain>限制器材</el-button></div>
-                </div>-->
               </template>
             </el-table-column>
             <el-table-column label="AD评估单号" prop="adEvalNumb" align="left" min-width="15%"></el-table-column>
@@ -101,10 +97,11 @@
             </el-table-column>
             <el-table-column label="描述" prop="adCompName" min-width="39%"></el-table-column>
             <el-table-column label="适用部件" prop="cnstIdCompTxt" min-width="8%"></el-table-column>
-            <el-table-column label="状态" prop="cnstIdStatusText" min-width="8%"></el-table-column>
+            <el-table-column label="状态" prop="cnstIdStatusTxt" min-width="8%"></el-table-column>
             <el-table-column label="操作" min-width="15%" align="center">
               <template scope="scope">
-                <router-link :to="{ name: 'ADEvalAdd', params: { id: scope.row.id, acTypeId: scope.row.acTypeId, action: 'update' }}"> <i class="el-icon-edit">编辑</i> </router-link>
+                <router-link :to="'/Engineering/ADEvalAdd/' + scope.row.id + '/' + scope.row.acTypeId + '/update'"> <i class="el-icon-edit">编辑</i> </router-link>
+                <!--<router-link :to="{ name: 'ADEvalAdd', params: { id: scope.row.id, acTypeId: scope.row.acTypeId, action: 'update' }}"> <i class="el-icon-edit">编辑</i> </router-link>-->
                 <!--<router-link :to="$route.path + '?id=' + scope.row.id + '&acTypeId=' + scope.row.acTypeId + '&action=update'"> <i class="el-icon-edit">编辑</i> </router-link>-->
                 <i style="width:20px;">&nbsp;</i>
                 <i class="el-icon-delete" @click="handleDel(scope.$index, scope.row)"><span>删除</span></i>
@@ -290,6 +287,7 @@
     float: left;/*该处换为display:inline-block;同样效果*/
 
   }
+  .el-form .el-form-item__content{margin-left:10px!important;}
 </style>
 <script>
   import $ from 'jquery';
@@ -308,7 +306,7 @@
           adCompVer: null,
           adDateEff: '',
           adDateEffEnd: '',
-          cnstIdStatus: '',
+          cnstIdStatus: 'adapply_status_open',
           cnstIdComp: ''
         },
         loading: false,
@@ -342,7 +340,7 @@
           cnstIdComp: '',
           cnstIdCompTxt: '',
           cnstIdCompTxtEn: '',
-          cnstIdStatus: '',
+          cnstIdStatus: 'adapply_status_open',
           cnstIdStatusTxt: '',
           cnstIdStatusTxtEn: '',
           followingEo: '',
@@ -356,7 +354,8 @@
         dialogTitle: '',
         buttonIndex: 1,
         dialogHeight: 'height: 100px',
-        dialogVisible: false // 新增界面是否显示
+        dialogVisible: false, // 新增界面是否显示
+        isShowSinorSearchPanel: false
       }
     },
     methods: {
@@ -538,6 +537,9 @@
         if (row.rateType === NEGATIVE) {
           return 'warning-row';
         }
+      },
+      handlerSeniorSearch() {
+        this.isShowSinorSearchPanel = !this.isShowSinorSearchPanel;
       },
       reset() {
         this.$refs['filters'].resetFields();

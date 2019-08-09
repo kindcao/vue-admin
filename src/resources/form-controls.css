@@ -70,4 +70,10 @@ input[type='text'], input[type='number'], input[type='age'] {
 [x-placement^=bottom].el-popper {
   margin-top: 3px;
 }
-
+.el-table .cell {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  white-space: normal;
+  word-break: break-all;
+  line-height: 17px;
+}
